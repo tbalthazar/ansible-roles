@@ -1,0 +1,122 @@
+---
+# install jitsi meet
+
+- name: Create install directory
+  file:
+    path: "{{ jitsi_install_dir }}"
+    state: directory
+    mode: '0770'
+    group: "wheel"
+
+- name: Clone git repo
+  git:
+    repo: "https://github.com/jitsi/docker-jitsi-meet"
+    dest: "{{ jitsi_install_dir }}"
+    version: master
+
+- name: Copy sample config
+  copy:
+    src: "{{ jitsi_install_dir }}/env.example"
+    dest: "{{ jitsi_install_dir }}/.env"
+    remote_src: yes
+    force: no
+
+- name: Generate passwords
+  command: "{{ jitsi_install_dir }}/gen-passwords.sh"
+
+- name: Change http port
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "^HTTP_PORT="
+    line: "HTTP_PORT=80"
+    state: present
+
+- name: Change https port
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "^HTTPS_PORT="
+    line: "HTTPS_PORT=443"
+    state: present
+
+- name: Change public URL
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "PUBLIC_URL="
+    line: "PUBLIC_URL=https://{{domain}}"
+    state: present
+
+- name: Change Docker Host Address
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "DOCKER_HOST_ADDRESS="
+    line: "DOCKER_HOST_ADDRESS={{ ansible_host }}"
+    state: present
+
+- name: Enable/disable Let's Encrypt
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "ENABLE_LETSENCRYPT="
+    line: "ENABLE_LETSENCRYPT={{enable_letsencrypt}}"
+    state: present
+
+- name: Configure Let's Encrypt domain
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "LETSENCRYPT_DOMAIN="
+    line: "LETSENCRYPT_DOMAIN={{domain}}"
+    state: present
+
+- name: Configure Let's Encrypt email
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "LETSENCRYPT_EMAIL="
+    line: "LETSENCRYPT_EMAIL={{letsencrypt_email}}"
+    state: present
+
+- name: Configure https redirection
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "ENABLE_HTTP_REDIRECT="
+    line: "ENABLE_HTTP_REDIRECT=1"
+    state: present
+
+- name: Configure config directory
+  lineinfile:
+    path: "{{ jitsi_install_dir }}/.env"
+    regexp: "CONFIG="
+    line: "CONFIG={{ jitsi_install_dir }}/.jitsi-meet-cfg"
+    state: present
+
+- name: Create config directories
+  file:
+    path: "{{ jitsi_install_dir }}/.jitsi-meet-cfg/{{item}}"
+    state: directory
+    mode: '0755'
+    group: "wheel"
+  with_items:
+    - web/letsencrypt
+    - transcripts
+    - prosody/config
+    - prosody/prosody-plugins-custom
+    - jicofo
+    - jvb
+    - jigasi
+    - jibri
+
+- name: Allow RDP Media (tcp)
+  ufw:
+    rule: allow
+    port: "4443"
+    proto: tcp
+
+- name: Allow RDP Media (udp)
+  ufw:
+    rule: allow
+    port: "10000"
+    proto: udp
+
+- name: Start docker-compose
+  docker_compose:
+    project_src: "{{ jitsi_install_dir }}"
+    restarted: yes
+  register: output

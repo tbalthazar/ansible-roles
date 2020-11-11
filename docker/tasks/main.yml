@@ -1,0 +1,64 @@
+---
+# install docker
+
+- name: Install required packages
+  apt:
+    force_apt_get: yes
+    pkg: "{{ packages }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  vars:
+    packages:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+    # those are used for the docker_compose ansible module
+    - python3-pip
+    - virtualenv
+    - python3-setuptools
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable
+    state: present
+
+- name: Install Docker
+  apt:
+    force_apt_get: yes
+    pkg: docker-ce
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Add docker group
+  group:
+    name: docker
+    state: present
+
+- name: Adding users to the docker group
+  user: name="{{ item.name }}"
+        groups=docker
+        append=yes
+  with_items: "{{ users }}"
+
+- name: Enable and start docker
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+- name: Install docker-compose Module for Python
+  pip:
+    name: docker-compose

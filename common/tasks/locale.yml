@@ -1,0 +1,41 @@
+---
+- name: Set timezone to UTC
+  file:
+    src: /usr/share/zoneinfo/Etc/UTC
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: Install NTP
+  apt:
+    force_apt_get: yes
+    pkg: ntp
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Install locales
+  apt:
+    force_apt_get: yes
+    pkg: locales
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Generate locales
+  locale_gen: name={{ item }} state=present
+  with_items:
+    - en_US.UTF-8
+    
+- name: Configure default locale
+  replace:
+    dest: /etc/default/locale
+    regexp: 'LANG="(.)*'
+    replace: 'LANG="en_US.UTF-8"'
+    backup: no
+
+- name: Enable and start NTP
+  service:
+    name: ntp
+    state: started
+    enabled: yes

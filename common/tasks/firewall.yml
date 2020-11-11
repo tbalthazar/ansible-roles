@@ -1,0 +1,45 @@
+---
+- name: Install Fail2ban
+  apt:
+    force_apt_get: yes
+    pkg: fail2ban
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Install UFW
+  apt:
+    force_apt_get: yes
+    pkg: ufw
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Setup ufw
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Allow ssh traffic
+  ufw:
+    rule: allow
+    port: "{{ ssh_port | string }}"
+    proto: tcp
+
+- name: Allow http traffic
+  ufw:
+    rule: allow
+    port: http
+    proto: tcp
+
+- name: Allow https traffic
+  ufw:
+    rule: allow
+    port: https
+    proto: tcp
+
+- name: Allow ntp traffic
+  ufw:
+    rule: allow
+    port: ntp
+    direction: out

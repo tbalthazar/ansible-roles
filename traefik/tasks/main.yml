@@ -1,0 +1,33 @@
+---
+# install traefik 
+
+- name: Create install directory
+  file:
+    path: "/opt/traefik"
+    state: directory
+    mode: '0700'
+
+- name: Create config directories
+  file:
+    path: "/mnt/{{ hostname }}-volume/traefik/config"
+    state: directory
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: "/opt/traefik/docker-compose.yaml"
+
+- name: Copy traefik config
+  template:
+    src: traefik.yaml.j2
+    dest: "/mnt/{{ hostname }}-volume/traefik/config/traefik.yaml"
+
+- name: Create a docker network
+  docker_network:
+    name: traefik-proxy
+
+- name: Start docker-compose
+  docker_compose:
+    project_src: "/opt/traefik"
+    restarted: yes
+  register: output

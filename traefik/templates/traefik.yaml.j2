@@ -1,0 +1,33 @@
+entryPoints:
+  http:
+    address: ":80"
+  https:
+    address: ":443"
+
+api:
+  dashboard: true
+  insecure: true
+
+accessLog:
+  filePath: "/var/log/traefik-access.log"
+
+log:
+  filePath: "/var/log/traefik.log"
+  #  https://doc.traefik.io/traefik/observability/logs/
+  level: "{{ traefik_log_level | default(ERROR) }}"
+
+providers:
+  docker:
+    network: traefik-proxy
+    exposedByDefault: false
+
+certificatesResolvers:
+  le-resolver:
+    acme:
+      email: thomas@balthazar.info
+{% if traefik_le_env|default("staging") !="production" %}
+      # staging server, comment for using default prod server
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+{% endif %}
+      storage: /etc/traefik/acme.json
+      tlsChallenge: {}
