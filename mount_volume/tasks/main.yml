@@ -1,0 +1,15 @@
+---
+# format and mount additional volume
+
+- name: Create a ext4 filesystem
+  filesystem:
+    fstype: ext4
+    dev: /dev/sda
+
+- name: Mount up device
+  mount:
+    path: /mnt/{{ hostname }}-volume
+    src: /dev/sda
+    opts: defaults
+    fstype: ext4
+    state: mounted
