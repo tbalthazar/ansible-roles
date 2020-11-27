@@ -35,14 +35,18 @@ services:
       - db-network
     labels:
       - "traefik.enable=true"
+      - traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect
       - traefik.http.routers.nextcloud.rule=Host(`{{ nextcloud_domain }}`)
 {% if nextcloud_https|default("disabled") == "enabled" %}
+      - traefik.http.middlewares.nextcloud.headers.stsSeconds=155520011
       - traefik.http.routers.nextcloud.entrypoints=https
       - traefik.http.routers.nextcloud.tls=true
       - traefik.http.routers.nextcloud.tls.certresolver=le-resolver
 {% else %}
       - traefik.http.routers.nextcloud.entrypoints=http
 {% endif %}
+      - traefik.http.middlewares.nextcloud_redirect.redirectregex.regex=/.well-known/(card|cal)dav
+      - traefik.http.middlewares.nextcloud_redirect.redirectregex.replacement=/remote.php/dav/
       - traefik.http.services.nextcloud.loadbalancer.server.port=80
     restart: unless-stopped
     volumes:
@@ -54,6 +58,10 @@ services:
       - POSTGRES_HOST=db
       - NEXTCLOUD_TRUSTED_DOMAINS={{ nextcloud_domain }}
       - TRUSTED_PROXIES=172.19.0.0/16
+{% if nextcloud_https|default("disabled") == "enabled" %}
+      - OVERWRITEPROTOCOL=https
+{% else %}
       - OVERWRITEPROTOCOL=http
+{% endif %}
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD=trustno1
