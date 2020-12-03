@@ -65,3 +65,12 @@ services:
 {% endif %}
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD=trustno1
+  cron:
+    image: nextcloud:latest
+    restart: always
+    volumes:
+      - /mnt/{{ hostname }}-volume/nextcloud/data:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
