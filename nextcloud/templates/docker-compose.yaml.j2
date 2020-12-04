@@ -67,9 +67,17 @@ services:
       - REDIS_HOST_PASSWORD=trustno1
   cron:
     image: nextcloud:latest
+    networks:
+      - traefik-proxy
+      - db-network
     restart: always
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/data:/var/www/html
+    environment:
+      - POSTGRES_USER={{ nextcloud_postgres_user|default("mmuser") }}
+      - POSTGRES_PASSWORD={{ nextcloud_postgres_password }}
+      - POSTGRES_DB={{ nextcloud_postgres_db|default("nextcloud") }}
+      - POSTGRES_HOST=db
     entrypoint: /cron.sh
     depends_on:
       - db
