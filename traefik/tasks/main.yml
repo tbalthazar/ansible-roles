@@ -11,6 +11,7 @@
   file:
     path: "/mnt/{{ hostname }}-volume/traefik/config"
     state: directory
+    mode: '711' # rwx --x --x
 
 - name: Copy docker-compose file
   template:
