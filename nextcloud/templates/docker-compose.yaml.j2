@@ -35,14 +35,15 @@ services:
       - db-network
     labels:
       - "traefik.enable=true"
-      - traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect
       - traefik.http.routers.nextcloud.rule=Host(`{{ nextcloud_domain }}`)
 {% if nextcloud_https|default("disabled") == "enabled" %}
+      - traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect
       - traefik.http.middlewares.nextcloud.headers.stsSeconds=155520011
       - traefik.http.routers.nextcloud.entrypoints=https
       - traefik.http.routers.nextcloud.tls=true
       - traefik.http.routers.nextcloud.tls.certresolver=le-resolver
 {% else %}
+      - traefik.http.routers.nextcloud.middlewares=nextcloud_redirect
       - traefik.http.routers.nextcloud.entrypoints=http
 {% endif %}
       - traefik.http.middlewares.nextcloud_redirect.redirectregex.regex=/.well-known/(card|cal)dav

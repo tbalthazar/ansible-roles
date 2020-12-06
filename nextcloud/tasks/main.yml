@@ -7,24 +7,11 @@
     state: directory
     mode: '0700'
 
-# - name: Create config directories
-#   file:
-#     path: "/mnt/{{ hostname }}-volume/mattermost/app/{{item}}"
-#     state: directory
-#     mode: '0700'
-#     owner: "2000"
-#     group: "2000"
-#   with_items:
-#     - data
-#     - logs
-#     - config
-#     - plugins
-#     - client-plugins
-
 - name: Create postgres directories
   file:
     path: "/mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data"
     state: directory
+    mode: '711' # rwx --x --x
 
 - name: Copy docker-compose file
   template:
