@@ -9,7 +9,7 @@ networks:
 services:
   redis:
     image: redis:alpine
-    command: redis-server --requirepass trustno1
+    command: redis-server --requirepass {{ nextcloud_redis_password }}
     networks:
       - db-network
     restart: unless-stopped
@@ -22,7 +22,7 @@ services:
       - /mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - POSTGRES_USER={{ nextcloud_postgres_user|default("mmuser") }}
+      - POSTGRES_USER={{ nextcloud_postgres_user|default("nextcloud") }}
       - POSTGRES_PASSWORD={{ nextcloud_postgres_password }}
       - POSTGRES_DB={{ nextcloud_postgres_db|default("nextcloud") }}
   app:
@@ -52,7 +52,7 @@ services:
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/data:/var/www/html
     environment:
-      - POSTGRES_USER={{ nextcloud_postgres_user|default("mmuser") }}
+      - POSTGRES_USER={{ nextcloud_postgres_user|default("nextcloud") }}
       - POSTGRES_PASSWORD={{ nextcloud_postgres_password }}
       - POSTGRES_DB={{ nextcloud_postgres_db|default("nextcloud") }}
       - POSTGRES_HOST=db
@@ -64,7 +64,17 @@ services:
       - OVERWRITEPROTOCOL=http
 {% endif %}
       - REDIS_HOST=redis
-      - REDIS_HOST_PASSWORD=trustno1
+      - REDIS_HOST_PASSWORD={{ nextcloud_redis_password }}
+{% if nextcloud_main_storage_s3|default("disabled") == "enabled" %}
+      - OBJECTSTORE_S3_HOST={{ nextcloud_s3_host }}
+      - OBJECTSTORE_S3_BUCKET={{ nextcloud_s3_bucket }}
+      - OBJECTSTORE_S3_KEY={{ nextcloud_s3_key }}
+      - OBJECTSTORE_S3_SECRET={{ nextcloud_s3_secret }}
+      - OBJECTSTORE_S3_PORT={{ nextcloud_s3_port|default(443) }}
+      - OBJECTSTORE_S3_SSL={{ nextcloud_s3_ssl|default("true") }}
+      - OBJECTSTORE_S3_REGION={{ nextcloud_s3_region }}
+      - OBJECTSTORE_S3_USEPATH_STYLE={{ nextcloud_s3_usepath_style|default("false") }}
+{% endif %}
   cron:
     image: nextcloud:latest
     networks:
@@ -74,7 +84,7 @@ services:
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/data:/var/www/html
     environment:
-      - POSTGRES_USER={{ nextcloud_postgres_user|default("mmuser") }}
+      - POSTGRES_USER={{ nextcloud_postgres_user|default("nextcloud") }}
       - POSTGRES_PASSWORD={{ nextcloud_postgres_password }}
       - POSTGRES_DB={{ nextcloud_postgres_db|default("nextcloud") }}
       - POSTGRES_HOST=db
