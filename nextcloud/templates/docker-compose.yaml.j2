@@ -29,7 +29,7 @@ services:
     depends_on:
       - db
       - redis
-    image: nextcloud:latest
+    image: nextcloud:{{ nextcloud_docker_image_tag }}
     networks:
       - traefik-proxy
       - db-network
@@ -77,7 +77,7 @@ services:
       - OBJECTSTORE_S3_USEPATH_STYLE={{ nextcloud_s3_usepath_style|default("false") }}
 {% endif %}
   cron:
-    image: nextcloud:latest
+    image: nextcloud:{{ nextcloud_docker_image_tag }}
     networks:
       - traefik-proxy
       - db-network
