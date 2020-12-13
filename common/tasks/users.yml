@@ -38,8 +38,8 @@
     regexp: '^#?PermitRootLogin'
     line: 'PermitRootLogin prohibit-password'
 
-- name: Remove default ubuntu user
-  user:
-    name: ubuntu
-    state: absent
-    remove: yes
+# - name: Remove default ubuntu user
+#   user:
+#     name: ubuntu
+#     state: absent
+#     remove: yes
