@@ -3,3 +3,4 @@
 ## Config Vars
 
 - hostname
+- additional_volume_device
