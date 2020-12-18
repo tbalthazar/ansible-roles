@@ -16,5 +16,12 @@
 - nextcloud_s3_secret
 - nextcloud_s3_port (default 443)
 - nextcloud_s3_ssl (default true)
-- nextcloud_s3_region
+- nextcloud_s3_region (mandatory if the bucket is created outside of Nextcloud, otherwise it will default to a random region)
 - nextcloud_s3_usepath_style (default false)
+- nextcloud_smtp: "enabled" or "disabled", default: "disabled"
+- nextcloud_smtp_server: "smtp.sendgrid.net"
+- nextcloud_smtp_port
+- nextcloud_smtp_username
+- nextcloud_smtp_password
+- nextcloud_smtp_from_email (just the part before the `@domain.org`)
+- nextcloud_smtp_from_domain (just the domain)
