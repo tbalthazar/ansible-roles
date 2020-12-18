@@ -67,13 +67,15 @@ services:
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD={{ nextcloud_redis_password }}
 {% if nextcloud_main_storage_s3|default("disabled") == "enabled" %}
+{% if nextcloud_s3_host is defined %}
       - OBJECTSTORE_S3_HOST={{ nextcloud_s3_host }}
+{% endif %}
+      - OBJECTSTORE_S3_REGION={{ nextcloud_s3_region }}
       - OBJECTSTORE_S3_BUCKET={{ nextcloud_s3_bucket }}
       - OBJECTSTORE_S3_KEY={{ nextcloud_s3_key }}
       - OBJECTSTORE_S3_SECRET={{ nextcloud_s3_secret }}
       - OBJECTSTORE_S3_PORT={{ nextcloud_s3_port|default(443) }}
       - OBJECTSTORE_S3_SSL={{ nextcloud_s3_ssl|default("true") }}
-      - OBJECTSTORE_S3_REGION={{ nextcloud_s3_region }}
       - OBJECTSTORE_S3_USEPATH_STYLE={{ nextcloud_s3_usepath_style|default("false") }}
 {% endif %}
   cron:
@@ -92,13 +94,15 @@ services:
       - REDIS_HOST=redis
       - REDIS_HOST_PASSWORD={{ nextcloud_redis_password }}
 {% if nextcloud_main_storage_s3|default("disabled") == "enabled" %}
+{% if nextcloud_s3_host is defined %}
       - OBJECTSTORE_S3_HOST={{ nextcloud_s3_host }}
+{% endif %}
+      - OBJECTSTORE_S3_REGION={{ nextcloud_s3_region }}
       - OBJECTSTORE_S3_BUCKET={{ nextcloud_s3_bucket }}
       - OBJECTSTORE_S3_KEY={{ nextcloud_s3_key }}
       - OBJECTSTORE_S3_SECRET={{ nextcloud_s3_secret }}
       - OBJECTSTORE_S3_PORT={{ nextcloud_s3_port|default(443) }}
       - OBJECTSTORE_S3_SSL={{ nextcloud_s3_ssl|default("true") }}
-      - OBJECTSTORE_S3_REGION={{ nextcloud_s3_region }}
       - OBJECTSTORE_S3_USEPATH_STYLE={{ nextcloud_s3_usepath_style|default("false") }}
 {% endif %}
     entrypoint: /cron.sh
