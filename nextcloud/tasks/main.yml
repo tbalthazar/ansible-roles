@@ -13,6 +13,16 @@
     state: directory
     mode: '711' # rwx --x --x
 
+- name: Copy app env file
+  template:
+    src: app.env.j2
+    dest: "/opt/nextcloud/app.env"
+
+- name: Copy db env file
+  template:
+    src: db.env.j2
+    dest: "/opt/nextcloud/db.env"
+
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
