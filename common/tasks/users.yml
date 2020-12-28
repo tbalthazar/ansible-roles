@@ -38,8 +38,15 @@
     regexp: '^#?PermitRootLogin'
     line: 'PermitRootLogin prohibit-password'
 
-# - name: Remove default ubuntu user
-#   user:
-#     name: ubuntu
-#     state: absent
-#     remove: yes
+- name: Switch current user so it's not "ubuntu"
+  set_fact:
+     current_user: "{{ ansible_user }}"
+     ansible_user: "{{ users[0].name }}"
+  when: ansible_user == "ubuntu"
+
+- name: Remove default ubuntu user
+  user:
+    name: ubuntu
+    state: absent
+    remove: yes
+    force: yes
