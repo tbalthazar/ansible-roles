@@ -19,12 +19,10 @@
     - git
     - gnupg2
     - htop
-    - libssl-dev # needed by Ruby
     - tmux
     - vim-gtk
     - vim-nox
     - wget
     - xclip
-    - zlib1g-dev # needed by Ruby
     - zsh
     state: present

@@ -1,0 +1,5 @@
+---
+# setup laptop
+
+- include: base_packages.yml
+- include: zsh.yml
