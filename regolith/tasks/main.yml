@@ -1,0 +1,14 @@
+---
+# install regolith linux
+
+- name: Add Regolith PPA
+  become: true
+  ansible.builtin.apt_repository:
+    repo: ppa:regolith-linux/release
+
+- name: Install regolith mobile (for laptop)
+  become: true
+  apt:
+    name:
+    - regolith-desktop-mobile
+    state: present
