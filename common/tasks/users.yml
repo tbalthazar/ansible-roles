@@ -16,7 +16,8 @@
   user:
     name: "{{ item.name }}"
     state: present
-    groups: wheel
+    groups:
+    - wheel
     append: true
     create_home: true
     shell: /bin/bash
@@ -33,8 +34,8 @@
 
 - name: Switch current user so it's not "ubuntu"
   set_fact:
-     current_user: "{{ ansible_user }}"
-     ansible_user: "{{ users[0].name }}"
+    current_user: "{{ ansible_user }}"
+    ansible_user: "{{ users[0].name }}"
   when: ansible_user == "ubuntu"
 
 - name: Remove default ubuntu user
