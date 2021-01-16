@@ -1,0 +1,60 @@
+---
+# Install asdf 
+
+- name: Install required packages
+  become: true
+  apt:
+    name:
+    - git
+    state: present
+
+- name: Install optional packages if needed
+  become: true
+  apt:
+    name:
+    - libssl-dev
+    - zlib1g-dev
+    state: present
+  when: "'ruby' in asdf_plugins"
+
+- name: Clone asdf
+  git:
+    repo: https://github.com/asdf-vm/asdf
+    dest: "$HOME/.asdf"
+    version: "{{ asdf_version }}"
+
+- name: List asdf installed plugins
+  command:
+    cmd: "asdf plugin list"
+  register: asdf_plugin_list
+  changed_when: false
+
+- name: Install plugins for asdf
+  command:
+    cmd: "asdf plugin add {{ item }}"
+  when: not asdf_plugin_list.stdout is search(item)
+  loop: "{{ asdf_plugins }}"
+
+- name: Get latest available plugin versions for asdf
+  command:
+    cmd: "asdf latest {{ item }}"
+  loop: "{{ asdf_plugins }}"
+  register: asdf_latest
+  changed_when: false
+
+- name: Install latest available version of plugins for asdf
+  command:
+    # here item is the result from the previous loop where:
+    # - item.item is the name of the plugin
+    # - item.stdout is the version of the plugin
+    cmd: "asdf install {{ item.item }} {{ item.stdout }}"
+  loop: "{{ asdf_latest.results }}"
+  # during iteration, the result of the current item is placed in the variable
+  changed_when: not asdf_install_plugin.stdout is search("already installed")
+  register: asdf_install_plugin
+
+# TODO: find a way to only do that when default version is not already set
+- name: Set default version of plugins for asdf
+  command:
+    cmd: "asdf global {{ item.item }} {{ item.stdout }}"
+  loop: "{{ asdf_latest.results }}"
