@@ -1,0 +1,21 @@
+---
+# Install dotfiles
+
+- name: Install required packages
+  become: true
+  apt:
+    name:
+    - git
+    - rcm
+    state: present
+
+- name: Clone dotfiles
+  git:
+    repo: "https://github.com/tbalthazar/dotfiles"
+    dest: "$HOME/.dotfiles"
+  register: clone_dotfiles
+
+- name: Install dotfiles
+  command:
+    cmd: "rcup -v -d $HOME/.dotfiles/dotfiles -t {{ dotfiles_tag }}"
+  when: clone_dotfiles.changed
