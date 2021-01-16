@@ -8,3 +8,7 @@
 - name: Install kubectl
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
+
+# TODO:
+# - kube_ps1
+# - terraform
