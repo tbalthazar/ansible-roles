@@ -17,18 +17,20 @@
   template:
     src: docker-compose.yaml.j2
     dest: "/opt/traefik/docker-compose.yaml"
+  notify: Restart docker-compose
 
 - name: Copy traefik config
   template:
     src: traefik.yaml.j2
     dest: "/mnt/{{ hostname }}-volume/traefik/config/traefik.yaml"
+  notify: Restart docker-compose
 
 - name: Create a docker network
   docker_network:
     name: traefik-proxy
+  notify: Restart docker-compose
 
 - name: Start docker-compose
   docker_compose:
     project_src: "/opt/traefik"
-    restarted: yes
-  register: output
+    state: present

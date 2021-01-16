@@ -1,0 +1,6 @@
+---
+- name: Restart docker-compose
+  docker_compose:
+    project_src: "/opt/traefik"
+    state: present
+    restarted: true
