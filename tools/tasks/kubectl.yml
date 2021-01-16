@@ -1,0 +1,24 @@
+---
+# Install kubectl
+
+- name: Get latest stable version number of kubernetes
+  uri:
+    url: https://storage.googleapis.com/kubernetes-release/release/stable.txt
+    return_content: yes
+  register: k8s_latest
+  changed_when: false
+
+- name: Check installed version of kubectl
+  command: kubectl version
+  register: kubectl_installed_version
+  failed_when: false
+  changed_when: false
+
+- name: Download latest version of kubectl
+  become: true
+  get_url:
+    url: "https://storage.googleapis.com/kubernetes-release/release/{{ k8s_latest.content }}/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    force: true
+    mode: 0755
+  when: not kubectl_installed_version.stdout is search(k8s_latest.content)
