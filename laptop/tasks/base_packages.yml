@@ -20,7 +20,6 @@
     - gnupg2
     - htop
     - libssl-dev # needed by Ruby
-    - rcm
     - tmux
     - vim-gtk
     - vim-nox

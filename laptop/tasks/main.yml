@@ -3,11 +3,7 @@
 
 - include: base_packages.yml
 - include: zsh.yml
-- include: dotfiles.yml
 - include: fzf.yml
-- include: asdf.yml
-- include: go.yml
-- include: ruby.yml
 
 # # Tmux theme
 # tmux_themes_dir=$HOME/.tmux/themes
