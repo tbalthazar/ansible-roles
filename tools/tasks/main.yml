@@ -1,0 +1,6 @@
+---
+# useful tools
+
+- name: Install fzf
+  include_tasks: fzf.yml
+  when: "tools is defined and 'fzf' in tools"
