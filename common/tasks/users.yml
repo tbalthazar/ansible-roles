@@ -31,13 +31,6 @@
      - "{{ users }}"
      - keys
 
-- name: Disable password authentication for root
-  lineinfile:
-    path: /etc/ssh/sshd_config
-    state: present
-    regexp: '^#?PermitRootLogin'
-    line: 'PermitRootLogin prohibit-password'
-
 - name: Switch current user so it's not "ubuntu"
   set_fact:
      current_user: "{{ ansible_user }}"
