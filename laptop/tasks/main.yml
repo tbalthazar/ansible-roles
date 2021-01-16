@@ -1,0 +1,29 @@
+---
+# setup laptop
+
+- include: base_packages.yml
+- include: zsh.yml
+- include: dotfiles.yml
+- include: fzf.yml
+- include: asdf.yml
+- include: go.yml
+- include: ruby.yml
+
+# # Tmux theme
+# tmux_themes_dir=$HOME/.tmux/themes
+# tmux_theme_dir=$tmux_themes_dir/nord-tmux
+# tmux_theme_repo=https://github.com/arcticicestudio/nord-tmux
+# mkdir -p $tmux_themes_dir
+# if [ -d $tmux_theme_dir ]; then
+#   cd $tmux_theme_dir && git pull 
+# else
+#   git clone $tmux_theme_repo $tmux_theme_dir
+# fi
+
+# printf "\n\n-- tmux theme installed\n\n"
+
+# # Install vim plugins
+# # TODO: seems to block, to investigate
+# #vim -es -u $HOME/.vimrc -i NONE -c "PlugInstall" -c "qa"
+
+# #printf "\n\n-- vim plugins installed\n\n"

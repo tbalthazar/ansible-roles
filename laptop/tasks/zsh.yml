@@ -1,0 +1,14 @@
+---
+# Switch to zsh
+
+- name: Get zsh path
+  command: which zsh 
+  register: zsh_path
+  when: not ansible_user_shell is search("zsh")
+
+- name: Switch to zsh
+  become: true 
+  user:
+    name: "{{ansible_ssh_user}}"
+    shell: "{{ zsh_path.stdout }}"
+  when: not ansible_user_shell is search("zsh")

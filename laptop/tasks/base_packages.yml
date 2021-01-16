@@ -1,0 +1,31 @@
+---
+# Install base packages
+
+- name: Update apt cache
+  become: true
+  apt:
+    update_cache: true 
+    upgrade: safe
+    autoremove: true
+    cache_valid_time: 3600
+
+- name: Install base packages
+  become: true
+  apt:
+    name:
+    - adduser
+    - build-essential
+    - curl
+    - git
+    - gnupg2
+    - htop
+    - libssl-dev # needed by Ruby
+    - rcm
+    - tmux
+    - vim-gtk
+    - vim-nox
+    - wget
+    - xclip
+    - zlib1g-dev # needed by Ruby
+    - zsh
+    state: present

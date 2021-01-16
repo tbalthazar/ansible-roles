@@ -1,0 +1,30 @@
+---
+# Install Ruby
+
+- name: Install Ruby plugin for asdf
+  command:
+    cmd: "asdf plugin add ruby"
+  when: not asdf_plugin_list.stdout is search("ruby")
+
+- name: Get latest Ruby version available for asdf
+  command:
+    cmd: "asdf latest ruby"
+  register: asdf_latest_ruby
+  changed_when: false
+
+- name: List Ruby versions installed by asdf
+  command:
+    cmd: "asdf list ruby"
+  register: asdf_list_ruby
+  changed_when: false
+
+- name: Install latest version of Ruby with asdf
+  command:
+    cmd: "asdf install ruby {{ asdf_latest_ruby.stdout }}"
+  when: not asdf_list_ruby.stdout is search(asdf_latest_ruby.stdout)
+  register: asdf_install_ruby
+
+- name: Set default Ruby version with asdf
+  command:
+    cmd: "asdf global ruby {{ asdf_latest_ruby.stdout }}"
+  when: asdf_install_ruby.changed

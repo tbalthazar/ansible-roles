@@ -1,0 +1,14 @@
+---
+# Install asdf 
+
+- name: Clone asdf
+  git:
+    repo: https://github.com/asdf-vm/asdf
+    dest: "$HOME/.asdf"
+    version: "v0.8.0"
+
+- name: List asdf installed plugins
+  command:
+    cmd: "asdf plugin list"
+  register: asdf_plugin_list
+  changed_when: false
