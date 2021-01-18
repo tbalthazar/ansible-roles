@@ -1,0 +1,15 @@
+---
+# Install VirtualBox Guest Additions
+
+- name: Install required packages
+  become: true
+  apt:
+    pkg:
+    - build-essential
+    - dkms
+    state: present
+    update_cache: true
+    cache_valid_time: 600
+
+  - name: Install VBoxGuestAdditions
+    shell: /media/cdrom/VBoxLinuxAdditions.run
