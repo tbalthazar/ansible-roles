@@ -23,16 +23,23 @@
     dest: "$HOME/.asdf"
     version: "{{ asdf_version }}"
 
+- name: Source asdf
+  shell:
+    cmd: "source $HOME/.asdf/asdf.sh"
+    executable: /usr/bin/zsh
+  changed_when: false
+
 - name: List asdf installed plugins
   command:
     cmd: "asdf plugin list"
   register: asdf_plugin_list
   changed_when: false
+  failed_when: false
 
 - name: Install plugins for asdf
   command:
     cmd: "asdf plugin add {{ item }}"
-  when: not asdf_plugin_list.stdout is search(item)
+  when: asdf_plugin_list.stdout is not defined or not asdf_plugin_list.stdout is search(item)
   loop: "{{ asdf_plugins }}"
 
 - name: Get latest available plugin versions for asdf
@@ -58,3 +65,4 @@
   command:
     cmd: "asdf global {{ item.item }} {{ item.stdout }}"
   loop: "{{ asdf_latest.results }}"
+  changed_when: false
