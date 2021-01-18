@@ -13,5 +13,6 @@
     shell: "{{ zsh_path.stdout }}"
   when: not ansible_user_shell is search("zsh")
 
-- name: Reset ssh connection to allow user changes to affect 'current login user'
-  meta: reset_connection
+- name: Ending play to allow log out
+  meta: end_play
+  when: not ansible_user_shell is search("zsh")

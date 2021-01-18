@@ -10,6 +10,3 @@
     state: present
     update_cache: true
     cache_valid_time: 600
-
-- name: Install VBoxGuestAdditions
-  shell: /media/cdrom/VBoxLinuxAdditions.run
