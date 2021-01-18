@@ -17,6 +17,10 @@
   include_tasks: virtualbox.yml
   when: "tools is defined and 'virtualbox' in tools"
 
+- name: Install VirtualBox Guest Additions
+  include_tasks: virtualbox-guest-additions.yml
+  when: "tools is defined and 'virtualbox-guest-additions' in tools"
+
 - name: Install VSCode
   include_tasks: vscode.yml
   when: "tools is defined and 'vscode' in tools"
