@@ -9,6 +9,10 @@
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
 
+- name: Install VirtualBox
+  include_tasks: virtualbox.yml
+  when: "tools is defined and 'virtualbox' in tools"
+
 - name: Install VSCode
   include_tasks: vscode.yml
   when: "tools is defined and 'vscode' in tools"
