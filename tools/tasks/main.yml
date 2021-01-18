@@ -9,10 +9,13 @@
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
 
+- name: Install VSCode
+  include_tasks: vscode.yml
+  when: "tools is defined and 'vscode' in tools"
+
 # TODO:
 # - kube_ps1
 # - terraform
-# - vscode
 # - nordvpn
 # - transmission (to get v3)
 # - signal
