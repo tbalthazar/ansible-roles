@@ -13,6 +13,6 @@
     shell: "{{ zsh_path.stdout }}"
   when: not ansible_user_shell is search("zsh")
 
-- name: Ending play to allow log out
-  meta: end_play
-  when: not ansible_user_shell is search("zsh")
+# - name: Ending play to allow log out
+#   meta: end_play
+#   when: not ansible_user_shell is search("zsh")
