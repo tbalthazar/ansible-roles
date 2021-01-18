@@ -1,0 +1,14 @@
+---
+# Install VSCode
+
+- name: Check if VSCode is already installed
+  command: which code
+  register: vscode_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install VSCode
+  become: true
+  apt:
+    deb: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+  when: vscode_installed.stdout == ""
