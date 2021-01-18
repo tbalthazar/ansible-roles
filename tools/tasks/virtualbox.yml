@@ -1,0 +1,24 @@
+---
+# Install VirtualBox
+
+- name: Add GPG apt Key
+  become: true
+  apt_key:
+    id: B9F8D658297AF3EFC18D5CDFA2F683C52980AECF
+    url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    state: present
+
+- name: Add Repository
+  become: true
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ubuntu_codename }} contrib"
+    state: present
+
+- name: Install VirtualBox
+  become: true
+  apt:
+    pkg:
+    - "virtualbox-{{ virtualbox_version }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 600
