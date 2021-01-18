@@ -21,4 +21,4 @@
     dest: /usr/local/bin/kubectl
     force: true
     mode: 0755
-  when: not kubectl_installed_version.stdout is search(k8s_latest.content)
+  when: kubectl_installed_version.stdout is not defined or not kubectl_installed_version.stdout is search(k8s_latest.content)

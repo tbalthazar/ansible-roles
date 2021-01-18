@@ -9,6 +9,10 @@
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
 
+- name: Install NordVPN
+  include_tasks: nordvpn.yml
+  when: "tools is defined and 'nordvpn' in tools"
+
 - name: Install VirtualBox
   include_tasks: virtualbox.yml
   when: "tools is defined and 'virtualbox' in tools"
@@ -20,9 +24,7 @@
 # TODO:
 # - kube_ps1
 # - terraform
-# - nordvpn
 # - transmission (to get v3)
 # - signal
-# - virtualbox
 # - chrome
 # - nextcloud latest
