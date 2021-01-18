@@ -1,0 +1,23 @@
+---
+# Install nordvpn
+
+- name: Check if NordVPN is already installed
+  command: which nordvpn
+  register: nordvpn_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install NordVPN deb file
+  become: true
+  apt:
+    deb: https://repo.nordvpn.com/deb/nordvpn/debian/pool/main/nordvpn-release_1.0.0_all.deb
+  when: nordvpn_installed.stdout == ""
+
+- name: Install NordVPN
+  become: true
+  apt:
+    pkg:
+    - nordvpn
+    state: present
+    update_cache: true
+    cache_valid_time: 600
