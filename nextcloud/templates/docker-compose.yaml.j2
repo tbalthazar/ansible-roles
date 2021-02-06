@@ -15,12 +15,14 @@ services:
     restart: unless-stopped
   db:
     image: postgres:{{ nextcloud_db_docker_image_tag }}
+    user: "3001:3001"
     networks:
       - db-network
     restart: unless-stopped
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
+      - /etc/passwd:/etc/passwd:ro
     env_file:
       - db.env
   app:

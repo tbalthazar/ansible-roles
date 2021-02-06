@@ -1,34 +1,70 @@
 ---
 # install nextcloud 
 
+- name: Ensure nextcloud group exists
+  group:
+    name: nextcloud
+    gid: 3001
+    state: present
+
+- name: Ensure nextcloud user exists
+  user:
+    name: nextcloud
+    uid: 3001
+    state: present
+    group: nextcloud
+    append: true
+    create_home: false
+
+- name: Add management users to nextcloud group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - nextcloud
+    append: true
+  with_items: "{{ users }}"
+
 - name: Create install directory
   file:
     path: "/opt/nextcloud"
     state: directory
-    mode: '0700'
+    mode: '0770'
+    owner: nextcloud
+    group: nextcloud
 
 - name: Create postgres directories
   file:
     path: "/mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data"
     state: directory
-    mode: '700' # rwx --- ---
+    mode: '770' # rwx rwx ---
+    owner: nextcloud
+    group: nextcloud
 
 - name: Copy app env file
   template:
     src: app.env.j2
     dest: "/opt/nextcloud/app.env"
+    mode: '660' # rw- rw- ---
+    owner: nextcloud
+    group: nextcloud
   notify: Restart docker-compose
 
 - name: Copy db env file
   template:
     src: db.env.j2
     dest: "/opt/nextcloud/db.env"
+    mode: '660' # rw- rw- ---
+    owner: nextcloud
+    group: nextcloud
   notify: Restart docker-compose
 
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
     dest: "/opt/nextcloud/docker-compose.yaml"
+    mode: '660' # rw- rw- ---
+    owner: nextcloud
+    group: nextcloud
   notify: Restart docker-compose
 
 - name: Start docker-compose
