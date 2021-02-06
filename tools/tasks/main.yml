@@ -32,3 +32,6 @@
 # - signal
 # - chrome
 # - nextcloud latest
+# - vlc
+# - alacritty
+# - remove i3/.Xresources config from dotfiles if using regolith
