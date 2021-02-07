@@ -3,7 +3,7 @@
 ## Config Vars
 
 - nextcloud_https: "enabled" or "disabled", default: "disabled"
-- nextcloud_db_docker_image_tag
+- nextcloud_db_docker_image
 - nextcloud_postgres_user (default "nextcloud")
 - nextcloud_postgres_password
 - nextcloud_postgres_db (default "nextcloud")

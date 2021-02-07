@@ -14,7 +14,8 @@ services:
       - db-network
     restart: unless-stopped
   db:
-    image: postgres:{{ nextcloud_db_docker_image_tag }}
+    image: {{ nextcloud_db_docker_image }}
+    command: ["-c", "archive_mode=on", "-c", "archive_command=wal-g wal-push %p", "-c", "archive_timeout=60"]
     user: "{{ nextcloud_default_user_id }}:{{ nextcloud_default_group_id }}"
     networks:
       - db-network
