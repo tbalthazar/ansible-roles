@@ -1,0 +1,5 @@
+---
+nextcloud_default_user_name: nextcloud
+nextcloud_default_group_name: nextcloud
+nextcloud_default_user_id: 3001
+nextcloud_default_group_id: 3001

@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
   db:
     image: postgres:{{ nextcloud_db_docker_image_tag }}
-    user: "3001:3001"
+    user: "{{ nextcloud_default_user_id }}:{{ nextcloud_default_group_id }}"
     networks:
       - db-network
     restart: unless-stopped

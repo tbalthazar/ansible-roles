@@ -25,3 +25,7 @@
 - nextcloud_smtp_password
 - nextcloud_smtp_from_email (just the part before the `@domain.org`)
 - nextcloud_smtp_from_domain (just the domain)
+- nextcloud_default_user_name: nextcloud
+- nextcloud_default_group_name: nextcloud
+- nextcloud_default_user_id: 3001
+- nextcloud_default_group_id: 3001
