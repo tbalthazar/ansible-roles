@@ -58,6 +58,15 @@
     group: "{{ nextcloud_default_group_name }}"
   notify: Restart docker-compose
 
+- name: Copy wal-g env file
+  template:
+    src: wal-g.env.j2
+    dest: "/opt/nextcloud/wal-g.env"
+    mode: '660' # rw- rw- ---
+    owner: "{{ nextcloud_default_user_name }}"
+    group: "{{ nextcloud_default_group_name }}"
+  notify: Restart docker-compose
+
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
