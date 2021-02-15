@@ -41,7 +41,7 @@ services:
     labels:
       - "traefik.enable=true"
       - traefik.http.routers.nextcloud.rule=Host(`{{ nextcloud_domain }}`)
-{% if nextcloud_https|default("disabled") == "enabled" %}
+{% if nextcloud_https == "enabled" %}
       - traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect
       - traefik.http.middlewares.nextcloud.headers.stsSeconds=155520011
       - traefik.http.routers.nextcloud.entrypoints=https

@@ -1,5 +1,13 @@
 ---
-nextcloud_default_user_name: nextcloud
+nextcloud_default_group_id: 3001
 nextcloud_default_group_name: nextcloud
 nextcloud_default_user_id: 3001
-nextcloud_default_group_id: 3001
+nextcloud_default_user_name: nextcloud
+nextcloud_https: disabled
+nextcloud_main_storage_s3: disabled
+nextcloud_postgres_db: nextcloud
+nextcloud_postgres_user: nextcloud
+nextcloud_s3_port: 443
+nextcloud_s3_ssl: true
+nextcloud_s3_usepath_style: false
+nextcloud_smtp: disabled
