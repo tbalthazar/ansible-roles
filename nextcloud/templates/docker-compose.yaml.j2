@@ -5,6 +5,8 @@ networks:
     external: true
   db-network:
     internal: true
+  # allow database to connect to the outside world for wal-g backups
+  outside-world:
 
 services:
   redis:
@@ -19,6 +21,7 @@ services:
     user: "{{ nextcloud_default_user_id }}:{{ nextcloud_default_group_id }}"
     networks:
       - db-network
+      - outside-world
     restart: unless-stopped
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data:/var/lib/postgresql/data
