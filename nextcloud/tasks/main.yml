@@ -79,4 +79,24 @@
 - name: Start docker-compose
   docker_compose:
     project_src: "/opt/nextcloud"
+    pull: yes
+    state: present
+
+- name: Get docker-compose path
+  command: which docker-compose 
+  register: docker_compose_path
+  changed_when: false
+
+- name: Ensure postgres full backup scripts is run by cron
+  cron:
+    name: "postgres full backup"
+    hour: "3"
+    # redirecting stdout/stderr both before and after -- allows to catch errors
+    # in docker-compose command itself and erros in its execution
+    job: >
+      cd /opt/nextcloud &&
+      {{ docker_compose_path.stdout }} exec -T -e PGUSER=nextcloud
+      2>&1 > /tmp/nextcloud-postgres-backup-cron
+      --
+      db /wal-g/full-backup.sh 2>&1 > /tmp/nextcloud-postgres-backup-cron
     state: present
