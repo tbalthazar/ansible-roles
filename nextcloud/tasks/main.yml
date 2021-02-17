@@ -90,6 +90,7 @@
 - name: Ensure postgres full backup scripts is run by cron
   cron:
     name: "postgres full backup"
+    minutes: "0"
     hour: "3"
     # redirecting stdout/stderr both before and after -- allows to catch errors
     # in docker-compose command itself and erros in its execution
