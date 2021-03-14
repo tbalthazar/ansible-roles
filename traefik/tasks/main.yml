@@ -34,3 +34,4 @@
   docker_compose:
     project_src: "/opt/traefik"
     state: present
+    pull: yes
