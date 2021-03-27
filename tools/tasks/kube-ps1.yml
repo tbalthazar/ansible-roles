@@ -1,0 +1,7 @@
+---
+# Install kube-ps1
+
+- name: Clone kube-ps1
+  git:
+    repo: "https://github.com/jonmosco/kube-ps1"
+    dest: "$HOME/.kube-ps1"  

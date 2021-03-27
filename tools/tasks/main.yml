@@ -13,6 +13,10 @@
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
 
+- name: Install kube-ps1
+  include_tasks: kube-ps1.yml
+  when: "tools is defined and 'kube-ps1' in tools"
+
 - name: Install Nextcloud Client
   include_tasks: nextcloud-client.yml
   when: "tools is defined and 'nextcloud-client' in tools"
