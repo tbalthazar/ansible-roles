@@ -12,12 +12,13 @@
   apt_key:
     url: https://updates.signal.org/desktop/apt/keys.asc
     state: present
+    keyring: /etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg
   when: signal_installed.stdout == ""
 
 - name: Add Repository
   become: true
   apt_repository:
-    repo: "deb [arch=amd64]  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
+    repo: "deb [arch=amd64  signed-by=/etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg]  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
     state: present
   when: signal_installed.stdout == ""
 
