@@ -20,3 +20,4 @@
     - nordvpn
     state: present
     update_cache: true
+  when: nordvpn_installed.stdout == ""

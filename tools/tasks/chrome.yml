@@ -20,3 +20,4 @@
     - google-chrome-stable
     state: present
     update_cache: true
+  when: chrome_installed.stdout == ""

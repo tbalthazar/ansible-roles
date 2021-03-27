@@ -1,17 +1,25 @@
 ---
 # Install Signal
 
+- name: Check if Signal is already installed
+  command: which signal-desktop
+  register: signal_installed
+  failed_when: false
+  changed_when: false
+
 - name: Add GPG apt Key
   become: true
   apt_key:
     url: https://updates.signal.org/desktop/apt/keys.asc
     state: present
+  when: signal_installed.stdout == ""
 
 - name: Add Repository
   become: true
   apt_repository:
     repo: "deb [arch=amd64]  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
     state: present
+  when: signal_installed.stdout == ""
 
 - name: Install Signal
   become: true
@@ -21,3 +29,4 @@
     state: present
     update_cache: true
     cache_valid_time: 600
+  when: signal_installed.stdout == ""
