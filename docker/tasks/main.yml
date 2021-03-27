@@ -22,10 +22,11 @@
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
+    keyring: /etc/apt/trusted.gpg.d/docker.gpg
 
 - name: Add Docker Repository
   apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable
+    repo: "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu {{ ubuntu_codename }} stable"
     state: present
 
 - name: Install Docker
