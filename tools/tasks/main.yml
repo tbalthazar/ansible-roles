@@ -9,6 +9,10 @@
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
 
+- name: Install Nextcloud Client
+  include_tasks: nextcloud-client.yml
+  when: "tools is defined and 'nextcloud-client' in tools"
+
 - name: Install NordVPN
   include_tasks: nordvpn.yml
   when: "tools is defined and 'nordvpn' in tools"

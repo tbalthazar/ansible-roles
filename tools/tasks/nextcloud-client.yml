@@ -1,0 +1,16 @@
+---
+# Install Nextcloud Client
+
+- name: Add Repository
+  become: true
+  apt_repository:
+    repo: ppa:nextcloud-devs/client
+    state: present
+
+- name: Install NordVPN
+  become: true
+  apt:
+    pkg:
+    - nextcloud-client
+    state: present
+    update_cache: true
