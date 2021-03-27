@@ -1,0 +1,31 @@
+---
+# Install terraform
+
+- name: Check if terraform is already installed
+  command: which terraform
+  register: terraform_installed
+  failed_when: false
+  changed_when: false
+
+- name: Add GPG apt Key
+  become: true
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+  when: terraform_installed.stdout == ""
+
+- name: Add Repository
+  become: true
+  apt_repository:
+    repo: "deb [arch={{ ansible_facts['ansible_architecture']}}] https://apt.releases.hashicorp.com {{ ansible_facts['ansible_distribution_release']}} main"
+    state: present
+  when: terraform_installed.stdout == ""
+
+- name: Install terraform
+  become: true
+  apt:
+    pkg:
+    - "terraform"
+    state: present
+    update_cache: true
+    cache_valid_time: 600

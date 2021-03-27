@@ -29,6 +29,10 @@
   include_tasks: signal.yml
   when: "tools is defined and 'signal' in tools"
 
+- name: Install terraform
+  include_tasks: terraform.yml
+  when: "tools is defined and 'terraform' in tools"
+
 - name: Install Transmission Client
   include_tasks: transmission-client.yml
   when: "tools is defined and 'transmission-client' in tools"
