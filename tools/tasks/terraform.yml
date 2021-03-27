@@ -14,10 +14,15 @@
     state: present
   when: terraform_installed.stdout == ""
 
+
+- name: Get architecture
+  shell: dpkg --print-architecture
+  register: arch
+
 - name: Add Repository
   become: true
   apt_repository:
-    repo: "deb [arch={{ ansible_facts['ansible_architecture']}}] https://apt.releases.hashicorp.com {{ ansible_facts['ansible_distribution_release']}} main"
+    repo: "deb [arch={{ arch.stdout }}] https://apt.releases.hashicorp.com {{ ansible_facts['distribution_release'] }} main"
     state: present
   when: terraform_installed.stdout == ""
 
