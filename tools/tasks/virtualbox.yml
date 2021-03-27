@@ -11,7 +11,7 @@
 - name: Add Repository
   become: true
   apt_repository:
-    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ubuntu_codename }} contrib"
+    repo: "deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian {{ ansible_facts['distribution_release'] }} contrib"
     state: present
 
 - name: Install VirtualBox
