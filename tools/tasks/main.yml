@@ -17,6 +17,10 @@
   include_tasks: nordvpn.yml
   when: "tools is defined and 'nordvpn' in tools"
 
+- name: Install Transmission Client
+  include_tasks: transmission-client.yml
+  when: "tools is defined and 'transmission-client' in tools"
+
 - name: Install VirtualBox
   include_tasks: virtualbox.yml
   when: "tools is defined and 'virtualbox' in tools"
@@ -32,10 +36,8 @@
 # TODO:
 # - kube_ps1
 # - terraform
-# - transmission (to get v3)
 # - signal
 # - chrome
-# - nextcloud latest
 # - vlc
 # - alacritty
 # - remove i3/.Xresources config from dotfiles if using regolith

@@ -1,0 +1,15 @@
+---
+# Install Transmission Client
+
+- name: Add Repository
+  become: true
+  apt_repository:
+    repo: ppa:transmissionbt/ppa
+
+- name: Install Transmission Client
+  become: true
+  apt:
+    pkg:
+    - transmission-gtk
+    state: present
+    update_cache: true
