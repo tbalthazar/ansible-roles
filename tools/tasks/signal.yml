@@ -10,7 +10,7 @@
 - name: Add Repository
   become: true
   apt_repository:
-    repo: "deb [arch=amd64  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
+    repo: "deb [arch=amd64]  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
     state: present
 
 - name: Install Signal
