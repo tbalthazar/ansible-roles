@@ -22,6 +22,7 @@
     - tmux
     - vim-gtk
     - vim-nox
+    - vlc
     - wget
     - xclip
     - zsh

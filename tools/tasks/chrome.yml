@@ -1,0 +1,22 @@
+---
+# Install chrome
+
+- name: Check if Chrome is already installed
+  command: which google-chrome
+  register: chrome_installed
+  failed_when: false
+  changed_when: false
+
+- name: Install Chrome deb file
+  become: true
+  apt:
+    deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  when: chrome_installed.stdout == ""
+
+- name: Install Chrome
+  become: true
+  apt:
+    pkg:
+    - google-chrome-stable
+    state: present
+    update_cache: true

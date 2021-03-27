@@ -1,6 +1,10 @@
 ---
 # useful tools
 
+- name: Install Chrome
+  include_tasks: chrome.yml
+  when: "tools is defined and 'chrome' in tools"
+
 - name: Install fzf
   include_tasks: fzf.yml
   when: "tools is defined and 'fzf' in tools"
@@ -37,7 +41,5 @@
 # - kube_ps1
 # - terraform
 # - signal
-# - chrome
-# - vlc
 # - alacritty
 # - remove i3/.Xresources config from dotfiles if using regolith
