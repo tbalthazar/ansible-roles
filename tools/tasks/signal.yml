@@ -1,0 +1,23 @@
+---
+# Install Signal
+
+- name: Add GPG apt Key
+  become: true
+  apt_key:
+    url: https://updates.signal.org/desktop/apt/keys.asc
+    state: present
+
+- name: Add Repository
+  become: true
+  apt_repository:
+    repo: "deb [arch=amd64  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
+    state: present
+
+- name: Install Signal
+  become: true
+  apt:
+    pkg:
+    - "signal-desktop"
+    state: present
+    update_cache: true
+    cache_valid_time: 600
