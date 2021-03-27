@@ -18,7 +18,7 @@
 - name: Add Repository
   become: true
   apt_repository:
-    repo: "deb [arch=amd64  signed-by=/etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg]  https://updates.signal.org/desktop/apt {{ ubuntu_codename }} main"
+    repo: "deb [arch=amd64  signed-by=/etc/apt/trusted.gpg.d/signal-desktop-keyring.gpg]  https://updates.signal.org/desktop/apt xenial main"
     state: present
   when: signal_installed.stdout == ""
 
