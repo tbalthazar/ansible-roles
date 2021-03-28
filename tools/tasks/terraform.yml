@@ -18,6 +18,7 @@
 - name: Get architecture
   shell: dpkg --print-architecture
   register: arch
+  changed_when: false
 
 - name: Add Repository
   become: true
