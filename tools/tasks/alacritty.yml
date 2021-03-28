@@ -15,6 +15,7 @@
   when: alacritty_installed.stdout == ""
 
 - name: Execute the alacritty install script
+  become: true
   shell: /tmp/install-alacritty.sh
   when: alacritty_installed.stdout == ""
 
