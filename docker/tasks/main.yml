@@ -46,7 +46,6 @@
     - containerd.io
     state: present
     update_cache: true
-    cache_valid_time: 600
 
 - name: Add docker group
   become: true

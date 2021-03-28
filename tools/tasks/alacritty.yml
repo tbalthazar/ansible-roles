@@ -17,3 +17,7 @@
 - name: Execute the alacritty install script
   shell: /tmp/install-alacritty.sh
   when: alacritty_installed.stdout == ""
+
+- name: Set alacritty as the default terminal
+  become: true
+  command: update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/local/bin/alacritty 50 
