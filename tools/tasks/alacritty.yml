@@ -16,8 +16,14 @@
 
 - name: Execute the alacritty install script
   become: true
-  script: /tmp/install-alacritty.sh
+  script: 
+    cmd: /tmp/install-alacritty.sh
+  register: result
   when: alacritty_installed.stdout == ""
+
+- name: Print return information from the previous task
+  ansible.builtin.debug:
+    var: result
 
 - name: Set alacritty as the default terminal
   become: true
