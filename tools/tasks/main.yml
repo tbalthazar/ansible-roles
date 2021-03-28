@@ -1,6 +1,10 @@
 ---
 # useful tools
 
+- name: Install Alacritty
+  include_tasks: alacritty.yml
+  when: "tools is defined and 'alacritty' in tools"
+
 - name: Install Chrome
   include_tasks: chrome.yml
   when: "tools is defined and 'chrome' in tools"
