@@ -11,4 +11,5 @@
   apt:
     name:
     - regolith-desktop-mobile
+    - regolith-look-ubuntu
     state: present
