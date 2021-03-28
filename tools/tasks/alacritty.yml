@@ -16,7 +16,7 @@
 
 - name: Execute the alacritty install script
   become: true
-  command: /tmp/install-alacritty.sh
+  script: /tmp/install-alacritty.sh
   when: alacritty_installed.stdout == ""
 
 - name: Set alacritty as the default terminal
