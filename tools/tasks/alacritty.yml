@@ -1,12 +1,19 @@
 ---
 # Install alacritty from Docker image
 
-- name: Check if Alacritty is already installed
+- name: Check if alacritty is already installed
   command: which alacritty
   register: alacritty_installed
   failed_when: false
   changed_when: false
 
-- name: Run alacritty install script
-  shell: https://raw.githubusercontent.com/tbalthazar/dockerfiles/main/alacritty-builder/install.sh
+- name: Download alacritty install script
+   get_url:
+     url: https://raw.githubusercontent.com/tbalthazar/dockerfiles/main/alacritty-builder/install.sh
+     dest: /tmp/install-alacritty.sh
+     mode: "0755"
+  when: alacritty_installed.stdout == ""
+
+- name: Execute the alacritty install script
+  shell: /tmp/zsh-installer.sh
   when: alacritty_installed.stdout == ""
