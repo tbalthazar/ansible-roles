@@ -8,10 +8,10 @@
   changed_when: false
 
 - name: Download alacritty install script
-   get_url:
-     url: https://raw.githubusercontent.com/tbalthazar/dockerfiles/main/alacritty-builder/install.sh
-     dest: /tmp/install-alacritty.sh
-     mode: "0755"
+  get_url:
+    url: https://raw.githubusercontent.com/tbalthazar/dockerfiles/main/alacritty-builder/install.sh
+    dest: /tmp/install-alacritty.sh
+    mode: "0755"
   when: alacritty_installed.stdout == ""
 
 - name: Execute the alacritty install script
