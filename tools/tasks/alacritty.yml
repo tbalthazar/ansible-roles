@@ -21,10 +21,6 @@
   register: result
   when: alacritty_installed.stdout == ""
 
-- name: Print return information from the previous task
-  ansible.builtin.debug:
-    var: result
-
 - name: Set alacritty as the default terminal
   become: true
   command: update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator /usr/local/bin/alacritty 50 
