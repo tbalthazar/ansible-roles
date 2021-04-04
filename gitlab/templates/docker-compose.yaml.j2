@@ -1,0 +1,35 @@
+version: "3"
+
+networks:
+  traefik-proxy:
+    external: true
+
+services:
+  web:
+    image: 'gitlab/gitlab-ee:latest'
+    networks:
+      - traefik-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitlab.rule=Host(`{{ gitlab_domain }}`)
+{% if gitlab_https|default("disabled") == "enabled" %}
+      - traefik.http.routers.gitlab.entrypoints=https
+      - traefik.http.routers.gitlab.tls=true
+      - traefik.http.routers.gitlab.tls.certresolver=le-resolver
+{% else %}
+      - traefik.http.routers.gitlab.entrypoints=http
+{% endif %}
+      - traefik.http.services.gitlab.loadbalancer.server.port=8929
+    restart: always
+    hostname: '{{ gitlab_domain }}'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://{{ gitlab_domain }}:8929'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2224
+    ports:
+      - '8929:8929'
+      - '2224:22'
+    volumes:
+      - /mnt/{{ hostname }}-volume/gitlab/config:/etc/gitlab'
+      - /mnt/{{ hostname }}-volume/gitlab/logs:/var/log/gitlab'
+      - /mnt/{{ hostname }}-volume/gitlab/data:/var/opt/gitlab'

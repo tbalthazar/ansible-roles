@@ -1,0 +1,6 @@
+---
+gitlab_domain: gitlab.local
+gitlab_default_group_id: 3002
+gitlab_default_group_name: gitlab
+gitlab_default_user_id: 3002
+gitlab_default_user_name: gitlab
