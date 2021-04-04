@@ -19,18 +19,15 @@ services:
 {% else %}
       - traefik.http.routers.gitlab.entrypoints=http
 {% endif %}
-      - traefik.http.services.gitlab.loadbalancer.server.port=8929
+      - traefik.http.services.gitlab.loadbalancer.server.port=80
     restart: always
     hostname: '{{ gitlab_domain }}'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://{{ gitlab_domain }}:8929'
-        gitlab_rails['gitlab_shell_ssh_port'] = 2224
-        letsencrypt['enable'] = false
+        external_url 'https://{{ gitlab_domain }}'
+        letsencrypt['enabled'] = false
+        nginx['listen_port'] = 80
         nginx['listen_https'] = false
-    ports:
-      - '8929:8929'
-      - '2224:22'
     volumes:
       - /mnt/{{ hostname }}-volume/gitlab/config:/etc/gitlab'
       - /mnt/{{ hostname }}-volume/gitlab/logs:/var/log/gitlab'
