@@ -19,6 +19,7 @@
     - git
     - gnupg2
     - htop
+    - postgresql-client
     - tmux
     - vim-gtk
     - vim-nox
