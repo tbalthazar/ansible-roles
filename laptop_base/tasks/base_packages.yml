@@ -20,6 +20,7 @@
     - gnupg2
     - htop
     - libpq-dev
+    - nodejs
     - postgresql-client
     - tmux
     - vim-gtk
