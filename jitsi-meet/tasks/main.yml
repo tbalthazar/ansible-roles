@@ -12,7 +12,7 @@
   git:
     repo: "https://github.com/jitsi/docker-jitsi-meet"
     dest: "{{ jitsi_install_dir }}"
-    version: master
+    version: "{{ jitsi_git_ref }}"
 
 - name: Copy sample config
   copy:

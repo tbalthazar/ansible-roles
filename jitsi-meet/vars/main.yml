@@ -1,2 +1,3 @@
 ---
 jitsi_install_dir: /opt/docker-jitsi-meet
+jitsi_git_ref: stable-5390-3
