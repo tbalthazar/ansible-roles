@@ -3,8 +3,6 @@ version: "3"
 networks:
   traefik-proxy:
     external: true
-  metrics-network:
-    internal: true
   # allow database to connect to the outside world for wal-g backups
   outside-world:
 
@@ -13,7 +11,6 @@ services:
     image: prom/prometheus
     networks:
       - traefik-proxy
-      - metrics-network
       - outside-world
     volumes:
       - "{{ prometheus_install_directory }}/prometheus.yaml:/etc/prometheus/prometheus.yml"
@@ -33,5 +30,4 @@ services:
     image: grafana/grafana
     networks:
       - traefik-proxy
-      - metrics-network
     restart: unless-stopped

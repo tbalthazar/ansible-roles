@@ -16,9 +16,6 @@ services:
       - '/:/host:ro,rslave'
     networks:
       - traefik-proxy
-      - metrics
-    # ports:
-    #   - 9100:9100
     labels:
       - "traefik.enable=true"
       - traefik.http.routers.node_exporter.rule=Host(`{{ node_exporter_domain }}`)

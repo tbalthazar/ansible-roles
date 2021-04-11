@@ -35,11 +35,6 @@
     owner: "{{ node_exporter_default_user_name }}"
     group: "{{ node_exporter_default_group_name }}"
 
-- name: Create a docker network
-  docker_network:
-    name: metrics
-  notify: Restart docker-compose
-
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
