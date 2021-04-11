@@ -15,8 +15,6 @@ services:
       - traefik-proxy
       - metrics-network
       - outside-world
-    ports:
-      - 9090:9090
     labels:
       - "traefik.enable=true"
       - traefik.http.routers.prometheus.rule=Host(`{{ prometheus_domain }}`)
