@@ -1,0 +1,37 @@
+version: "3"
+
+networks:
+  traefik-proxy:
+    external: true
+  metrics-network:
+    internal: true
+  # allow database to connect to the outside world for wal-g backups
+  outside-world:
+
+services:
+  prometheus:
+    image: prom/prometheus
+    networks:
+      - traefik-proxy
+      - metrics-network
+      - outside-world
+    ports:
+      - 9090:9090
+    labels:
+      - "traefik.enable=true"
+      - traefik.http.routers.prometheus.rule=Host(`{{ prometheus_domain }}`)
+{% if prometheus_https == "enabled" %}
+      - traefik.http.routers.prometheus.entrypoints=https
+      - traefik.http.routers.prometheus.tls=true
+      - traefik.http.routers.prometheus.tls.certresolver=le-resolver
+{% else %}
+      - traefik.http.routers.prometheus.entrypoints=http
+{% endif %}
+      - traefik.http.services.prometheus.loadbalancer.server.port=9090
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana
+    networks:
+      - traefik-proxy
+      - metrics-network
+    restart: unless-stopped
