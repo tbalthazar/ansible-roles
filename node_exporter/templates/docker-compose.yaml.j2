@@ -1,0 +1,33 @@
+version: "3"
+
+networks:
+  traefik-proxy:
+    external: true
+  metrics:
+    external: true
+
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    command:
+      - '--path.rootfs=/host'
+    pid: host
+    volumes:
+      - '/:/host:ro,rslave'
+    networks:
+      - traefik-proxy
+      - metrics
+    # ports:
+    #   - 9100:9100
+    labels:
+      - "traefik.enable=true"
+      - traefik.http.routers.node_exporter.rule=Host(`{{ node_exporter_domain }}`)
+{% if prometheus_https == "enabled" %}
+      - traefik.http.routers.node_exporter.entrypoints=https
+      - traefik.http.routers.node_exporter.tls=true
+      - traefik.http.routers.node_exporter.tls.certresolver=le-resolver
+{% else %}
+      - traefik.http.routers.node_exporter.entrypoints=http
+{% endif %}
+      - traefik.http.services.node_exporter.loadbalancer.server.port=9100
+    restart: unless-stopped

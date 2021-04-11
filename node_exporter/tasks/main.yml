@@ -1,0 +1,56 @@
+---
+# install the prometheus node exporter 
+
+# https://github.com/vegasbrianc/prometheus/blob/master/docker-compose.yml
+
+
+- name: Ensure node_exporter group exists
+  group:
+    name: "{{ node_exporter_default_group_name }}"
+    gid: "{{ node_exporter_default_group_id }}"
+    state: present
+
+- name: Ensure node_exporter user exists
+  user:
+    name: "{{ node_exporter_default_user_name }}"
+    uid: "{{ node_exporter_default_user_id }}"
+    state: present
+    group: "{{ node_exporter_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to node_exporter group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ node_exporter_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
+- name: Create install directory
+  file:
+    path: "{{ node_exporter_install_directory }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ node_exporter_default_user_name }}"
+    group: "{{ node_exporter_default_group_name }}"
+
+- name: Create a docker network
+  docker_network:
+    name: metrics
+  notify: Restart docker-compose
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ node_exporter_install_directory }}/docker-compose.yaml"
+    mode: '660' # rw- rw- ---
+    owner: "{{ node_exporter_default_user_name }}"
+    group: "{{ node_exporter_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Start docker-compose
+  docker_compose:
+    project_src: "{{ node_exporter_install_directory }}"
+    pull: yes
+    state: present

@@ -1,0 +1,8 @@
+---
+node_exporter_domain: node_exporter.local
+node_exporter_https: disabled
+node_exporter_install_directory: /opt/node_exporter
+node_exporter_default_group_id: 3010
+node_exporter_default_group_name: node_exporter
+node_exporter_default_user_id: 3010
+node_exporter_default_user_name: node_exporter
