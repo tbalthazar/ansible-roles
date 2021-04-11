@@ -6,3 +6,6 @@ prometheus_default_group_id: 3005
 prometheus_default_group_name: prometheus
 prometheus_default_user_id: 3005
 prometheus_default_user_name: prometheus
+
+grafana_domain: grafana.local
+grafana_https: disabled
