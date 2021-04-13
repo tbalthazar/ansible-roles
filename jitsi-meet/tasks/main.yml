@@ -1,18 +1,42 @@
 ---
 # install jitsi meet
 
+- name: Ensure jitsi group exists
+  group:
+    name: "{{ jitsi_default_group_name }}"
+    gid: "{{ jitsi_default_group_id }}"
+    state: present
+
+- name: Ensure jitsi user exists
+  user:
+    name: "{{ jitsi_default_user_name }}"
+    uid: "{{ jitsi_default_user_id }}"
+    state: present
+    group: "{{ jitsi_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to jitsi group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ jitsi_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
 - name: Create install directory
   file:
     path: "{{ jitsi_install_dir }}"
     state: directory
     mode: '0770'
-    group: "wheel"
+    owner: "{{ jitsi_default_user_name }}"
+    group: "{{ jitsi_default_group_name }}"
 
 - name: Clone git repo
   git:
     repo: "https://github.com/jitsi/docker-jitsi-meet"
     dest: "{{ jitsi_install_dir }}"
-    version: "{{ jitsi_git_ref }}"
+    version: "{{ jitsi_version_tag }}"
 
 - name: Copy sample config
   copy:
@@ -28,21 +52,21 @@
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "^HTTP_PORT="
-    line: "HTTP_PORT=80"
+    line: "HTTP_PORT=3015"
     state: present
 
 - name: Change https port
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "^HTTPS_PORT="
-    line: "HTTPS_PORT=443"
+    line: "HTTPS_PORT=3016"
     state: present
 
 - name: Change public URL
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "PUBLIC_URL="
-    line: "PUBLIC_URL=https://{{domain}}"
+    line: "PUBLIC_URL=https://{{jitsi_domain}}"
     state: present
 
 - name: Change Docker Host Address
@@ -52,32 +76,25 @@
     line: "DOCKER_HOST_ADDRESS={{ ansible_host }}"
     state: present
 
-- name: Enable/disable Let's Encrypt
+- name: Disable Let's Encrypt
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "ENABLE_LETSENCRYPT="
-    line: "ENABLE_LETSENCRYPT={{enable_letsencrypt}}"
+    line: "ENABLE_LETSENCRYPT=0"
     state: present
 
-- name: Configure Let's Encrypt domain
+- name: Disable https
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
-    regexp: "LETSENCRYPT_DOMAIN="
-    line: "LETSENCRYPT_DOMAIN={{domain}}"
+    regexp: "DISABLE_HTTPS="
+    line: "DISABLE_HTTPS=1"
     state: present
 
-- name: Configure Let's Encrypt email
-  lineinfile:
-    path: "{{ jitsi_install_dir }}/.env"
-    regexp: "LETSENCRYPT_EMAIL="
-    line: "LETSENCRYPT_EMAIL={{letsencrypt_email}}"
-    state: present
-
-- name: Configure https redirection
+- name: Disable https redirection
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "ENABLE_HTTP_REDIRECT="
-    line: "ENABLE_HTTP_REDIRECT=1"
+    line: "ENABLE_HTTP_REDIRECT=0"
     state: present
 
 - name: Configure config directory
@@ -92,7 +109,8 @@
     path: "{{ jitsi_install_dir }}/.jitsi-meet-cfg/{{item}}"
     state: directory
     mode: '0755'
-    group: "wheel"
+    owner: "{{ jitsi_default_user_name }}"
+    group: "{{ jitsi_default_group_name }}"
   with_items:
     - web/letsencrypt
     - transcripts
@@ -114,6 +132,15 @@
     rule: allow
     port: "10000"
     proto: udp
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ jitsi_install_dir }}/docker-compose.yml"
+    mode: '660' # rw- rw- ---
+    owner: "{{ jitsi_default_user_name }}"
+    group: "{{ jitsi_default_group_name }}"
+  notify: Restart docker-compose
 
 - name: Start docker-compose
   docker_compose:
