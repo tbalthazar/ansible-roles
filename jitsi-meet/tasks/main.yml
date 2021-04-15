@@ -73,7 +73,7 @@
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "DOCKER_HOST_ADDRESS="
-    line: "DOCKER_HOST_ADDRESS=35.180.70.171"
+    line: "DOCKER_HOST_ADDRESS={{ ansible_host }}"
     state: present
 
 - name: Disable Let's Encrypt
