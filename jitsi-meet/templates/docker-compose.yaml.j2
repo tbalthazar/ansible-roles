@@ -260,16 +260,15 @@ services:
         depends_on:
             - prosody
         networks:
-            traefik-proxy:
             meet.jitsi:
                 aliases:
                     - jvb.meet.jitsi
+        # modified for traefik:
         labels:
         - traefik.enable=true
         - traefik.udp.routers.jvb.entrypoints=video
         - traefik.udp.routers.jvb.service=jvb
         - traefik.udp.services.jvb.loadbalancer.server.port=10000
-        - traefik.docker.network=traefik-proxy
 
 # Custom network so all services can communicate using a FQDN
 networks:
