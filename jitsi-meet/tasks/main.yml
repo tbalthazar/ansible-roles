@@ -35,18 +35,27 @@
 - name: Clone git repo
   git:
     repo: "https://github.com/jitsi/docker-jitsi-meet"
-    dest: "{{ jitsi_install_dir }}"
+    dest: "/tmp/docker-jitsi-meet/{{ jitsi_version_tag }}"
     version: "{{ jitsi_version_tag }}"
 
-- name: Copy sample config
+- name: Create sample config
   copy:
-    src: "{{ jitsi_install_dir }}/env.example"
-    dest: "{{ jitsi_install_dir }}/.env"
+    src: "/tmp/docker-jitsi-meet/{{ jitsi_version_tag }}/env.example"
+    dest: "/tmp/docker-jitsi-meet/{{ jitsi_version_tag }}/.env"
     remote_src: yes
     force: no
 
 - name: Generate passwords
-  command: "{{ jitsi_install_dir }}/gen-passwords.sh"
+  command: "/tmp/docker-jitsi-meet/{{ jitsi_version_tag }}/gen-passwords.sh"
+
+- name: Copy sample config
+  copy:
+    src: "/tmp/docker-jitsi-meet/{{ jitsi_version_tag }}/.env"
+    dest: "{{ jitsi_install_dir }}/.env"
+    remote_src: yes
+    force: no
+    owner: "{{ jitsi_default_user_name }}"
+    group: "{{ jitsi_default_group_name }}"
 
 - name: Change public URL
   lineinfile:
@@ -87,12 +96,12 @@
   lineinfile:
     path: "{{ jitsi_install_dir }}/.env"
     regexp: "CONFIG="
-    line: "CONFIG={{ jitsi_install_dir }}/.jitsi-meet-cfg"
+    line: "CONFIG={{ jitsi_install_dir }}/config"
     state: present
 
 - name: Create config directories
   file:
-    path: "{{ jitsi_install_dir }}/.jitsi-meet-cfg/{{item}}"
+    path: "{{ jitsi_install_dir }}/config/{{item}}"
     state: directory
     mode: '0755'
     owner: "{{ jitsi_default_user_name }}"
