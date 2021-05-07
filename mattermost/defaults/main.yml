@@ -1,0 +1,14 @@
+---
+mattermost_default_group_id: 3020
+mattermost_default_group_name: mattermost
+mattermost_default_user_id: 3020
+mattermost_default_user_name: mattermost
+mattermost_https: disabled
+
+# mattermost_main_storage_s3: disabled
+# mattermost_postgres_db: nextcloud
+# mattermost_postgres_user: nextcloud
+# mattermost_s3_port: 443
+# mattermost_s3_ssl: true
+# mattermost_s3_usepath_style: false
+# mattermost_smtp: disabled
