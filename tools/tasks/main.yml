@@ -13,6 +13,10 @@
   include_tasks: fzf.yml
   when: "tools is defined and 'fzf' in tools"
 
+- name: Install helm
+  include_tasks: helm.yml
+  when: "tools is defined and 'helm' in tools"
+
 - name: Install kubectl
   include_tasks: kubectl.yml
   when: "tools is defined and 'kubectl' in tools"
