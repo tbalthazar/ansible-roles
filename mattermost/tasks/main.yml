@@ -3,7 +3,7 @@
 
 - name: Create install directory
   file:
-    path: "/opt/mattermost"
+    path: "{{ mattermost_install_dir }}"
     state: directory
     mode: '0700'
 
@@ -29,10 +29,10 @@
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
-    dest: "/opt/mattermost/docker-compose.yaml"
+    dest: "{{ mattermost_install_dir }}/docker-compose.yaml"
   notify: Restart docker-compose
 
 - name: Start docker-compose
   docker_compose:
-    project_src: "/opt/mattermost"
+    project_src: "{{ mattermost_install_dir }}"
     state: present
