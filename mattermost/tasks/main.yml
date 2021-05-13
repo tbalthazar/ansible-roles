@@ -1,19 +1,36 @@
 ---
 # install mattermost 
 
+- name: Ensure mattermost group exists
+  group:
+    name: "{{ mattermost_default_group_name }}"
+    gid: "{{ mattermost_default_group_id }}"
+    state: present
+
+- name: Ensure mattermost user exists
+  user:
+    name: "{{ mattermost_default_user_name }}"
+    uid: "{{ mattermost_default_user_id }}"
+    state: present
+    group: "{{ mattermost_default_group_name }}"
+    append: true
+    create_home: false
+
 - name: Create install directory
   file:
     path: "{{ mattermost_install_dir }}"
     state: directory
     mode: '0700'
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
 
 - name: Create config directories
   file:
     path: "/mnt/{{ hostname }}-volume/mattermost/app/{{item}}"
     state: directory
     mode: '0700'
-    owner: "2000"
-    group: "2000"
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
   with_items:
     - data
     - logs
@@ -25,11 +42,34 @@
   file:
     path: "/mnt/{{ hostname }}-volume/mattermost/db/var/lib/postgresql/data"
     state: directory
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
+
+- name: Copy app env file
+  template:
+    src: app.env.j2
+    dest: "{{ mattermost_install_dir }}/app.env"
+    mode: '660' # rw- rw- ---
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Copy db env file
+  template:
+    src: db.env.j2
+    dest: "{{ mattermost_install_dir }}/db.env"
+    mode: '660' # rw- rw- ---
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
+  notify: Restart docker-compose
 
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
     dest: "{{ mattermost_install_dir }}/docker-compose.yaml"
+    mode: '660' # rw- rw- ---
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
   notify: Restart docker-compose
 
 - name: Start docker-compose

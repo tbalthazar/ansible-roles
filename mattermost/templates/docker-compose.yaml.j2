@@ -15,10 +15,8 @@ services:
     volumes:
       - /mnt/{{ hostname }}-volume/mattermost/db/var/lib/postgresql/data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      - POSTGRES_USER={{ mattermost_postgres_user }}
-      - POSTGRES_PASSWORD={{ mattermost_postgres_password }}
-      - POSTGRES_DB={{ mattermost_postgres_db }}
+    env_file:
+      - db.env
   app:
     depends_on:
       - db
@@ -46,40 +44,5 @@ services:
       - /mnt/{{ hostname }}-volume/mattermost/app/plugins:/mattermost/plugins:rw
       - /mnt/{{ hostname }}-volume/mattermost/app/client-plugins:/mattermost/client/plugins:rw
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      # set same as db credentials and dbname
-      - MM_USERNAME={{ mattermost_postgres_user }}
-      - MM_PASSWORD={{ mattermost_postgres_password }}
-      - MM_DBNAME={{ mattermost_postgres_db }}
-      - MM_SQLSETTINGS_DRIVERNAME=postgres
-      # use the credentials you've set above, in the format:
-      # MM_SQLSETTINGS_DATASOURCE=postgres://${MM_USERNAME}:${MM_PASSWORD}@db:5432/${MM_DBNAME}?sslmode=disable&connect_timeout=10
-      - MM_SQLSETTINGS_DATASOURCE=postgres://{{ mattermost_postgres_user }}:{{ mattermost_postgres_password }}@db:5432/{{ mattermost_postgres_db }}?sslmode=disable&connect_timeout=10
-{% if mattermost_object_storage == "enabled" %}
-      - MM_FILESETTINGS_DRIVERNAME=amazons3
-      - MM_FILESETTINGS_AMAZONS3SSL=true
-      - MM_FILESETTINGS_AMAZONS3ENDPOINT={{ mattermost_object_storage_endpoint }}
-      - MM_FILESETTINGS_AMAZONS3ACCESSKEYID={{ mattermost_object_storage_access_key_id }}
-      - MM_FILESETTINGS_AMAZONS3SECRETACCESSKEY={{ mattermost_object_storage_secret_access_key }}
-      - MM_FILESETTINGS_AMAZONS3BUCKET={{ mattermost_object_storage_bucket }}
-      - MM_FILESETTINGS_AMAZONS3PATHPREFIX={{ mattermost_object_storage_path_prefix }}
-{% endif %}
-{% if mattermost_smtp == "enabled" %}
-      - MM_EMAILSETTINGS_SENDEMAILNOTIFICATIONS=true
-      - MM_EMAILSETTINGS_CONNECTIONSECURITY=TLS
-      - MM_EMAILSETTINGS_ENABLESMTPAUTH=true
-      - MM_EMAILSETTINGS_SMTPUSERNAME={{ mattermost_smtp_username }}
-      - MM_EMAILSETTINGS_SMTPPASSWORD={{ mattermost_smtp_password }}
-      - MM_EMAILSETTINGS_SMTPSERVER={{ mattermost_smtp_server }}
-      - MM_EMAILSETTINGS_SMTPPORT={{ mattermost_smtp_port }}
-      - MM_EMAILSETTINGS_FEEDBACKNAME={{ mattermost_smtp_from_name }}
-      - MM_EMAILSETTINGS_FEEDBACKEMAIL={{ mattermost_smtp_from_email }}
-      - MM_EMAILSETTINGS_REPLYTOADDRESS={{ mattermost_smtp_reply_to_email }}
-{% else %}
-      - MM_EMAILSETTINGS_SENDEMAILNOTIFICATIONS=false
-{% endif %}
-{% if mattermost_https == "enabled" %}
-      - MM_SERVICESETTINGS_SITEURL=https://{{ mattermost_domain }}
-{% else %}
-      - MM_SERVICESETTINGS_SITEURL=http://{{ mattermost_domain }}
-{% endif %}
+    env_file:
+      - app.env
