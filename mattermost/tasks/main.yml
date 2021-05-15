@@ -36,7 +36,7 @@
   file:
     path: "/mnt/{{ hostname }}-volume/mattermost/app/{{item}}"
     state: directory
-    mode: '0700'
+    mode: '0770'
     owner: "{{ mattermost_default_user_name }}"
     group: "{{ mattermost_default_group_name }}"
   with_items:
@@ -50,6 +50,7 @@
   file:
     path: "/mnt/{{ hostname }}-volume/mattermost/db/var/lib/postgresql/data"
     state: directory
+    mode: '0770'
     owner: "{{ mattermost_default_user_name }}"
     group: "{{ mattermost_default_group_name }}"
 
@@ -66,6 +67,15 @@
   template:
     src: db.env.j2
     dest: "{{ mattermost_install_dir }}/db.env"
+    mode: '660' # rw- rw- ---
+    owner: "{{ mattermost_default_user_name }}"
+    group: "{{ mattermost_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Copy wal-g env file
+  template:
+    src: wal-g.env.j2
+    dest: "{{ mattermost_install_dir }}/wal-g.env"
     mode: '660' # rw- rw- ---
     owner: "{{ mattermost_default_user_name }}"
     group: "{{ mattermost_default_group_name }}"

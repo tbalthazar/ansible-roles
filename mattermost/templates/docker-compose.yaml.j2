@@ -20,6 +20,7 @@ services:
       - /etc/passwd:/etc/passwd:ro
     env_file:
       - db.env
+      - wal-g.env
   app:
     depends_on:
       - db
