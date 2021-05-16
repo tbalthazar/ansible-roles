@@ -23,3 +23,7 @@
 - mattermost_object_storage_secret_access_key
 - mattermost_object_storage_bucket
 - mattermost_object_storage_path_prefix
+- mattermost_object_storage_region
+- mattermost_wal_g_aws_access_key_id
+- mattermost_wal_g_aws_secret_access_key
+- mattermost_wal_g_s3_prefix
