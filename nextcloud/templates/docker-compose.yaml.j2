@@ -39,7 +39,7 @@ services:
       - traefik-proxy
       - db-network
     labels:
-      - "traefik.enable=true"
+      - traefik.enable=true
       - traefik.http.routers.nextcloud.rule=Host(`{{ nextcloud_domain }}`)
 {% if nextcloud_https == "enabled" %}
       - traefik.http.routers.nextcloud.middlewares=nextcloud,nextcloud_redirect

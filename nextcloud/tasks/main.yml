@@ -26,7 +26,7 @@
 
 - name: Create install directory
   file:
-    path: "/opt/nextcloud"
+    path: "{{ nextcloud_install_dir }}"
     state: directory
     mode: '0770'
     owner: "{{ nextcloud_default_user_name }}"
@@ -43,7 +43,7 @@
 - name: Copy app env file
   template:
     src: app.env.j2
-    dest: "/opt/nextcloud/app.env"
+    dest: "{{ nextcloud_install_dir }}/app.env"
     mode: '660' # rw- rw- ---
     owner: "{{ nextcloud_default_user_name }}"
     group: "{{ nextcloud_default_group_name }}"
@@ -52,7 +52,7 @@
 - name: Copy db env file
   template:
     src: db.env.j2
-    dest: "/opt/nextcloud/db.env"
+    dest: "{{ nextcloud_install_dir }}/db.env"
     mode: '660' # rw- rw- ---
     owner: "{{ nextcloud_default_user_name }}"
     group: "{{ nextcloud_default_group_name }}"
@@ -61,7 +61,7 @@
 - name: Copy wal-g env file
   template:
     src: wal-g.env.j2
-    dest: "/opt/nextcloud/wal-g.env"
+    dest: "{{ nextcloud_install_dir }}/wal-g.env"
     mode: '660' # rw- rw- ---
     owner: "{{ nextcloud_default_user_name }}"
     group: "{{ nextcloud_default_group_name }}"
@@ -70,7 +70,7 @@
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
-    dest: "/opt/nextcloud/docker-compose.yaml"
+    dest: "{{ nextcloud_install_dir }}/docker-compose.yaml"
     mode: '660' # rw- rw- ---
     owner: "{{ nextcloud_default_user_name }}"
     group: "{{ nextcloud_default_group_name }}"
@@ -78,7 +78,7 @@
 
 - name: Start docker-compose
   docker_compose:
-    project_src: "/opt/nextcloud"
+    project_src: "{{ nextcloud_install_dir }}"
     pull: yes
     state: present
 
@@ -95,8 +95,8 @@
     # redirecting stdout/stderr both before and after -- allows to catch errors
     # in docker-compose command itself and erros in its execution
     job: >
-      cd /opt/nextcloud &&
-      {{ docker_compose_path.stdout }} exec -T -e PGUSER=nextcloud
+      cd {{ nextcloud_install_dir }} &&
+      {{ docker_compose_path.stdout }} exec -T -e PGUSER="{{ nextcloud_default_user_name }}"
       2>&1 > /tmp/nextcloud-postgres-backup-cron
       --
       db /wal-g/full-backup.sh 2>&1 > /tmp/nextcloud-postgres-backup-cron
