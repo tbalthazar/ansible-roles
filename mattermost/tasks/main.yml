@@ -102,14 +102,14 @@
 
 - name: Ensure postgres full backup scripts is run by cron
   cron:
-    name: "postgres full backup"
+    name: "mattermost postgres full backup"
     minute: "0"
     hour: "3"
     # redirecting stdout/stderr both before and after -- allows to catch errors
     # in docker-compose command itself and erros in its execution
     job: >
       cd {{ mattermost_install_dir }} &&
-      {{ docker_compose_path.stdout }} exec -T -e PGUSER="{{ mattermost_default_user_name }}"
+      {{ docker_compose_path.stdout }} exec -T -e PGUSER="{{ mattermost_postgres_user }}"
       2>&1 > /tmp/mattermost-postgres-backup-cron
       --
       db /wal-g/full-backup.sh 2>&1 > /tmp/mattermost-postgres-backup-cron
