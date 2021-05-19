@@ -96,7 +96,9 @@
     # in docker-compose command itself and erros in its execution
     job: >
       cd {{ nextcloud_install_dir }} &&
-      {{ docker_compose_path.stdout }} exec -T -e PGUSER="{{ nextcloud_postgres_user }}"
+      {{ docker_compose_path.stdout }} exec -T
+      -e PGUSER="{{ nextcloud_postgres_user }}"
+      -e PGDATABASE="{{ nextcloud_postgres_db }}"
       2>&1 > /tmp/nextcloud-postgres-backup-cron
       --
       db /wal-g/full-backup.sh 2>&1 > /tmp/nextcloud-postgres-backup-cron
