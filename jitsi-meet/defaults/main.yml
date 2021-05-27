@@ -1,6 +1,6 @@
 ---
 jitsi_install_dir: /opt/jitsi-meet
-jitsi_version_tag: stable-5765-1
+jitsi_version_tag: stable-5870
 jitsi_default_group_id: 3015
 jitsi_default_group_name: jitsi
 jitsi_default_user_id: 3015
