@@ -1,17 +1,44 @@
 ---
 # install traefik 
 
+- name: Ensure traefik group exists
+  group:
+    name: "{{ traefik_default_group_name }}"
+    gid: "{{ traefik_default_group_id }}"
+    state: present
+
+- name: Ensure traefik user exists
+  user:
+    name: "{{ traefik_default_user_name }}"
+    uid: "{{ traefik_default_user_id }}"
+    state: present
+    group: "{{ traefik_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to traefik group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ traefik_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
 - name: Create install directory
   file:
     path: "/opt/traefik"
     state: directory
-    mode: '0700'
+    mode: '0770'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
 
 - name: Create config directories
   file:
     path: "/mnt/{{ hostname }}-volume/traefik/config"
     state: directory
-    mode: '711' # rwx --x --x
+    mode: '771' # rwx rwx --x
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
 
 - name: Copy docker-compose file
   template:
