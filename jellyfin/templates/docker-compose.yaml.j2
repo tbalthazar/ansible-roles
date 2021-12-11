@@ -1,0 +1,23 @@
+version: "3"
+
+networks:
+  traefik-proxy:
+    external: true
+
+services:
+  app:
+    image: {{ jellyfin_app_docker_image }}
+    restart: unless-stopped
+    networks:
+      - traefik-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jellyfin.rule=Host(`{{ jellyfin_domain }}`)
+      - traefik.http.routers.jellyfin.entrypoints=http
+      - traefik.http.services.jellyfin.loadbalancer.server.port=8096
+    user: {{ jellyfin_default_user_id }}:{{ jellyfin_default_group_id }}
+    volumes:
+      - /mnt/{{ hostname }}-volume/jellyfin/app/cache:/cache:rw
+      - /mnt/{{ hostname }}-volume/jellyfin/app/config:/config:rw
+      - /mnt/{{ hostname }}-volume/jellyfin/app/media:/media:rw
+      - /etc/localtime:/etc/localtime:ro

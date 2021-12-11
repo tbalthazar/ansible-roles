@@ -1,0 +1,59 @@
+---
+# install jellyfin 
+
+- name: Ensure jellyfin group exists
+  group:
+    name: "{{ jellyfin_default_group_name }}"
+    gid: "{{ jellyfin_default_group_id }}"
+    state: present
+
+- name: Ensure jellyfin user exists
+  user:
+    name: "{{ jellyfin_default_user_name }}"
+    uid: "{{ jellyfin_default_user_id }}"
+    state: present
+    group: "{{ jellyfin_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to jellyfin group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ jellyfin_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
+- name: Create install directory
+  file:
+    path: "{{ jellyfin_install_dir }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ jellyfin_default_user_name }}"
+    group: "{{ jellyfin_default_group_name }}"
+
+- name: Create config directories
+  file:
+    path: "/mnt/{{ hostname }}-volume/jellyfin/app/{{item}}"
+    state: directory
+    mode: '0770'
+    owner: "{{ jellyfin_default_user_name }}"
+    group: "{{ jellyfin_default_group_name }}"
+  with_items:
+    - cache
+    - config
+    - media
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ jellyfin_install_dir }}/docker-compose.yaml"
+    mode: '660' # rw- rw- ---
+    owner: "{{ jellyfin_default_user_name }}"
+    group: "{{ jellyfin_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Start docker-compose
+  docker_compose:
+    project_src: "{{ jellyfin_install_dir }}"
+    state: present

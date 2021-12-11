@@ -1,0 +1,8 @@
+---
+jellyfin_app_docker_image: jellyfin/jellyfin:latest
+jellyfin_domain: mediacenter.home
+jellyfin_default_group_id: 3025
+jellyfin_default_group_name: jellyfin
+jellyfin_default_user_id: 3025
+jellyfin_default_user_name: jellyfin
+jellyfin_install_dir: /opt/jellyfin
