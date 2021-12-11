@@ -1,6 +1,13 @@
 ---
-- name: Restart docker-compose
+- name: Delete containers
+  docker_compose:
+    project_src: "/opt/traefik"
+    state: absent
+  listen: "Restart docker-compose"
+
+- name: Restart containers
   docker_compose:
     project_src: "/opt/traefik"
     state: present
     restarted: true
+  listen: "Restart docker-compose"

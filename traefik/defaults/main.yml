@@ -4,3 +4,4 @@ traefik_default_group_id: 3020
 traefik_default_group_name: traefik
 traefik_default_user_id: 3020
 traefik_default_user_name: traefik
+traefik_force_https_redirect: enabled
