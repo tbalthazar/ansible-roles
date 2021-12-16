@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  app:
+    image: {{ pihole_docker_image }}
+    restart: unless-stopped
+    ports:
+    - "8053:80"
+    - "53:53/tcp"
+    - "53:53/udp"
+    # user: {{ pihole_default_user_id }}:{{ pihole_default_group_id }}
+    user: root:root
+    environment:
+      PIHOLE_DNS_: '1.1.1.1;8.8.8.8'
+      TZ: "Europe/Brussels"
+      WEBPASSWORD: {{ pihole_web_password }}
+    volumes:
+      - /mnt/{{ hostname }}-volume/pihole/etc/pihole:/etc/pihole
+      - /mnt/{{ hostname }}-volume/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
+      - /etc/localtime:/etc/localtime:ro
