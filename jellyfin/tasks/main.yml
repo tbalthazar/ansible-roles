@@ -42,7 +42,6 @@
   with_items:
     - cache
     - config
-    - media
 
 - name: Copy docker-compose file
   template:
@@ -57,3 +56,21 @@
   docker_compose:
     project_src: "{{ jellyfin_install_dir }}"
     state: present
+
+- name: Install utils
+  apt:
+    force_apt_get: yes
+    pkg: 
+    - exfat-fuse
+    - exfat-utils
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Mount up device
+  mount:
+    path: /mnt/media
+    src: /dev/sda1
+    opts: defaults
+    fstype: exfat
+    state: mounted

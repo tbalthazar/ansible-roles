@@ -1,5 +1,5 @@
 ---
-jellyfin_app_docker_image: jellyfin/jellyfin:latest
+jellyfin_app_docker_image: lscr.io/linuxserver/jellyfin
 jellyfin_domain: mediacenter.home
 jellyfin_default_group_id: 3025
 jellyfin_default_group_name: jellyfin
