@@ -41,7 +41,7 @@
     group: "{{ pihole_default_group_name }}"
   with_items:
     - etc/pihole
-    - ect/dnsmasq.d
+    - etc/dnsmasq.d
 
 - name: Allow DNS (tcp)
   ufw:
