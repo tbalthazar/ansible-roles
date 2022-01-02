@@ -32,13 +32,37 @@
     owner: "{{ jellyfin_default_user_name }}"
     group: "{{ jellyfin_default_group_name }}"
 
+- name: Install exfat utils
+  apt:
+    force_apt_get: yes
+    pkg: 
+    - exfat-fuse
+    - exfat-utils
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Load the exfat module
+  modprobe:
+    name: exfat
+    state: present
+
+- name: Mount up device
+  mount:
+    path: /mnt/external-exfat
+    src: /dev/sda1
+    opts: defaults
+    fstype: exfat
+    state: mounted
+
 - name: Create config directories
   file:
-    path: "/mnt/{{ hostname }}-volume/jellyfin/app/{{item}}"
+    path: "/mnt/external-exfat/jellyfin/app/{{item}}"
     state: directory
-    mode: '0770'
-    owner: "{{ jellyfin_default_user_name }}"
-    group: "{{ jellyfin_default_group_name }}"
+    # no permissions here cause it's exfat
+    # mode: '0770'
+    # owner: "{{ jellyfin_default_user_name }}"
+    # group: "{{ jellyfin_default_group_name }}"
   with_items:
     - cache
     - config
@@ -56,21 +80,3 @@
   docker_compose:
     project_src: "{{ jellyfin_install_dir }}"
     state: present
-
-- name: Install utils
-  apt:
-    force_apt_get: yes
-    pkg: 
-    - exfat-fuse
-    - exfat-utils
-    state: present
-    update_cache: yes
-    cache_valid_time: 600
-
-- name: Mount up device
-  mount:
-    path: /mnt/media
-    src: /dev/sda1
-    opts: defaults
-    fstype: exfat
-    state: mounted

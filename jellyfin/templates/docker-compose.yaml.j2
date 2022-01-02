@@ -24,7 +24,7 @@ services:
       - /dev/video11:/dev/video11
       - /dev/video12:/dev/video12
     volumes:
-      - /mnt/{{ hostname }}-volume/jellyfin/app/cache:/cache:rw
-      - /mnt/{{ hostname }}-volume/jellyfin/app/config:/config:rw
-      - /mnt/media:/media:rw
+      - /mnt/external-exfat/jellyfin/app/cache:/cache:rw
+      - /mnt/external-exfat/jellyfin/app/config:/config:rw
+      - /mnt/external-exfat/media:/media:rw
       - /etc/localtime:/etc/localtime:ro
