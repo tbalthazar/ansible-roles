@@ -55,6 +55,21 @@
     port: "53"
     proto: udp
 
+# dnsmasq is used by lxd:
+# https://discuss.linuxcontainers.org/t/lxd-via-snapd-disable-dnsmasq/450
+- name: Remove lxd
+  snap:
+    name: lxd
+    state: absent
+  failed_when: false
+
+- name: Stop and disable systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+    masked: no
+
 - name: Copy docker-compose file
   template:
     src: docker-compose.yaml.j2
@@ -64,9 +79,21 @@
     group: "{{ pihole_default_group_name }}"
   notify: Restart docker-compose
 
+- name: Temporarily set DNS server
+  lineinfile:
+    path: /etc/resolv.conf
+    line: "nameserver 1.1.1.1"
+    state: present
+
 - name: Start docker-compose
   docker_compose:
     project_src: "{{ pihole_install_dir }}"
     pull: yes
     restarted: yes
   register: output
+
+- name: Temporarily set DNS server
+  lineinfile:
+    path: /etc/resolv.conf
+    line: "nameserver 1.1.1.1"
+    state: absent
