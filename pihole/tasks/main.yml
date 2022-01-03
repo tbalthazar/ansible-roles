@@ -79,11 +79,18 @@
     group: "{{ pihole_default_group_name }}"
   notify: Restart docker-compose
 
+- name: Get stats of /etc/resolv.conf
+  stat:
+    path: /etc/resolv.conf
+    follow: yes
+  register: resolv_conf
+
 - name: Temporarily set DNS server
   lineinfile:
     path: /etc/resolv.conf
     line: "nameserver 1.1.1.1"
     state: present
+  when: resolv_conf.stat.exists
 
 - name: Start docker-compose
   docker_compose:
@@ -92,8 +99,9 @@
     restarted: yes
   register: output
 
-- name: Temporarily set DNS server
+- name: Remove temporary DNS server
   lineinfile:
     path: /etc/resolv.conf
     line: "nameserver 1.1.1.1"
     state: absent
+  when: resolv_conf.stat.exists
