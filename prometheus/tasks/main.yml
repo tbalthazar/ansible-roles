@@ -1,0 +1,65 @@
+---
+# install prometheus 
+
+- name: Ensure prometheus group exists
+  group:
+    name: "{{ prometheus_default_group_name }}"
+    gid: "{{ prometheus_default_group_id }}"
+    state: present
+
+- name: Ensure prometheus user exists
+  user:
+    name: "{{ prometheus_default_user_name }}"
+    uid: "{{ prometheus_default_user_id }}"
+    state: present
+    group: "{{ prometheus_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to prometheus group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ prometheus_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
+- name: Create install directory
+  file:
+    path: "{{ prometheus_install_dir }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ prometheus_default_user_name }}"
+    group: "{{ prometheus_default_group_name }}"
+
+- name: Create config directory
+  file:
+    path: "/mnt/{{ hostname }}-volume/prometheus/app/etc/prometheus"
+    state: directory
+    mode: '775' # rwx rwx ---
+    owner: "{{ prometheus_default_user_name }}"
+    group: "{{ prometheus_default_group_name }}"
+
+- name: Copy config file
+  template:
+    src: prometheus.yml.j2
+    dest: "/mnt/{{ hostname }}-volume/prometheus/app/etc/prometheus/prometheus.yml"
+    mode: '664' # rw- rw- r--
+    owner: "{{ prometheus_default_user_name }}"
+    group: "{{ prometheus_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yaml.j2
+    dest: "{{ prometheus_install_dir }}/docker-compose.yaml"
+    mode: '660' # rw- rw- ---
+    owner: "{{ prometheus_default_user_name }}"
+    group: "{{ prometheus_default_group_name }}"
+  notify: Restart docker-compose
+
+- name: Start docker-compose
+  docker_compose:
+    project_src: "{{ prometheus_install_dir }}"
+    pull: yes
+    state: present

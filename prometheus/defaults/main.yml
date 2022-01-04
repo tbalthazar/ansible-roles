@@ -1,0 +1,9 @@
+---
+prometheus_app_docker_image: prom/prometheus
+prometheus_domain: prometheus.home
+prometheus_default_group_id: 3030
+prometheus_default_group_name: prometheus
+prometheus_default_user_id: 3030
+prometheus_default_user_name: prometheus
+prometheus_install_dir: /opt/prometheus
+prometheus_https: disabled 
