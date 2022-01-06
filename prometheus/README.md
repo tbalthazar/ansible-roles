@@ -12,3 +12,4 @@
 - prometheus_default_user_id
 - prometheus_default_user_name
 - prometheus_install_dir
+- prometheus_https 
