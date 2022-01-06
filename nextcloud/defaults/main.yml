@@ -3,7 +3,7 @@ nextcloud_default_group_id: 3001
 nextcloud_default_group_name: nextcloud
 nextcloud_default_user_id: 3001
 nextcloud_default_user_name: nextcloud
-nextcloud_docker_image_tag: "22.2.3-apache"
+nextcloud_docker_image_tag: "23.0.0-apache"
 nextcloud_https: disabled
 nextcloud_install_dir: /opt/nextcloud
 nextcloud_main_storage_s3: disabled
