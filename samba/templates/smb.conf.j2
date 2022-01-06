@@ -1,0 +1,20 @@
+[global]
+server string = File Server
+workgroup = WORKGROUP
+security = user
+map to guest = Bad User
+name resolve order = bcast host
+
+{% for share in samba_shares %}
+[{{ share.name }}]
+path = {{ share.path }}
+force user = "{{ samba_default_user_name }}"
+force group = "{{ samba_default_group_name }}"
+create mask = 0664
+force create mode = 0664
+directory mask = 0775
+force directory mode = 0775
+public = yes
+writable = {{ share.writable }}
+
+{% endfor %}

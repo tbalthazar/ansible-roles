@@ -1,0 +1,7 @@
+---
+samba_default_group_name: smbgroup
+samba_default_user_name: smbuser
+samba_shares:
+  - name: sample-public-share
+    writable: "yes"
+    path: /share/sample-public-share
