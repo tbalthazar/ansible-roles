@@ -48,6 +48,7 @@
     owner: "{{ samba_default_user_name }}"
     group: "{{ samba_default_group_name }}"
   with_items: "{{ samba_shares }}"
+  when: item.create == "yes" 
 
 - name: Allow port
   ufw:

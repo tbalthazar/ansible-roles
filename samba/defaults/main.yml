@@ -5,3 +5,4 @@ samba_shares:
   - name: sample-public-share
     writable: "yes"
     path: /share/sample-public-share
+    create: "yes"
