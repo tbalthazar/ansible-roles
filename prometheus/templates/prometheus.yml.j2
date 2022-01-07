@@ -10,3 +10,6 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ['localhost:9090']
+  - job_name: vm02
+    static_configs:
+      - targets: ['192.168.1.29:9100']
