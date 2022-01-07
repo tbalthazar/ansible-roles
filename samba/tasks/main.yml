@@ -1,0 +1,72 @@
+---
+# install samba 
+
+- name: Ensure samba group exists
+  group:
+    name: "{{ samba_default_group_name }}"
+    system: yes
+    state: present
+
+- name: Ensure samba user exists
+  user:
+    name: "{{ samba_default_user_name }}"
+    state: present
+    group: "{{ samba_default_group_name }}"
+    append: true
+    create_home: false
+    system: yes
+    shell: /bin/false
+
+- name: Add management users to samba group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ samba_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
+- name: Install samba
+  apt:
+    force_apt_get: yes
+    pkg: 
+    - samba
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Make sure a samba running
+  systemd:
+    state: started
+    enabled: yes
+    name: smbd
+
+- name: Create shares
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    mode: '0775'
+    owner: "{{ samba_default_user_name }}"
+    group: "{{ samba_default_group_name }}"
+  with_items: "{{ samba_shares }}"
+  when: item.create == "yes" 
+
+- name: Allow port
+  ufw:
+    rule: allow
+    port: "139"
+    proto: tcp
+
+- name: Allow port
+  ufw:
+    rule: allow
+    port: "445"
+    proto: tcp
+
+- name: Copy config file
+  template:
+    src: smb.conf.j2
+    dest: "/etc/samba/smb.conf"
+    mode: '660' # rw- rw- ---
+    owner: "{{ samba_default_user_name }}"
+    group: "{{ samba_default_group_name }}"
+  notify: Restart samba
