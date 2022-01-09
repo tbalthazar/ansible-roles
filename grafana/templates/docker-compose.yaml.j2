@@ -1,0 +1,27 @@
+
+version: "3"
+
+networks:
+  traefik-proxy:
+    external: true
+
+services:
+  app:
+    image: {{ grafana_app_docker_image }}
+    networks:
+      - traefik-proxy
+    user: "{{ grafana_default_user_id }}:{{ grafana_default_group_id }}"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.grafana.rule=Host(`{{ grafana_domain }}`)
+{% if grafana_https == "enabled" %}
+      - traefik.http.routers.grafana.entrypoints=https
+      - traefik.http.routers.grafana.tls=true
+      - traefik.http.routers.grafana.tls.certresolver=le-resolver
+{% else %}
+      - traefik.http.routers.grafana.entrypoints=http
+{% endif %}
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+    restart: unless-stopped
+    volumes:
+      - /mnt/{{ hostname }}-volume/grafana/app/var/lib/grafana:/var/lib/grafana
