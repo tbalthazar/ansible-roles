@@ -29,6 +29,9 @@ providers:
   docker:
     network: traefik-proxy
     exposedByDefault: false
+  file:
+    directory: /etc/traefik/file-provider
+    watch: true
 
 certificatesResolvers:
   le-resolver:

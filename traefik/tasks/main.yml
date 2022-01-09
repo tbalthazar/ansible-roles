@@ -39,6 +39,9 @@
     mode: '771' # rwx rwx --x
     owner: "{{ traefik_default_user_name }}"
     group: "{{ traefik_default_group_name }}"
+  with_items:
+  - "/mnt/{{ hostname }}-volume/traefik/config"
+  - "/mnt/{{ hostname }}-volume/traefik/config/file-provider"
 
 - name: Copy docker-compose file
   template:
