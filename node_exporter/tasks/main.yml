@@ -85,10 +85,10 @@
     group: "root"
   notify: Restart node_exporter
 
-# TODO: don't open port and proxy through traefik with basic auth
-# https://nickb.dev/blog/monitoring-remote-sites-with-traefik-and-prometheus
-- name: Allow node_exporter traffic
-  ufw:
-    rule: allow
-    port: "9100"
-    proto: tcp
+- name: Copy traefik config
+  template:
+    src: traefik_node_exporter.yaml.j2
+    dest: "/mnt/{{ hostname }}-volume/traefik/config/file-provider/node-exporter.yaml"
+    mode: '755'
+    owner: "{{ node_exporter_default_user_name }}"
+    group: "{{ node_exporter_default_group_name }}"

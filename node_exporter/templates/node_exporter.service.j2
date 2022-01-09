@@ -4,7 +4,7 @@ Description=Node Exporter
 [Service]
 User={{ node_exporter_default_user_name }}
 Group={{ node_exporter_default_group_name }}
-ExecStart={{ node_exporter_install_dir }}/node_exporter
+ExecStart={{ node_exporter_install_dir }}/node_exporter --web.listen-address={{ ansible_facts["docker0"]["ipv4"]["address"] }}:9100
 
 [Install]
 WantedBy=multi-user.target
