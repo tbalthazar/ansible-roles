@@ -7,12 +7,16 @@ rule_files:
   # - "second.rules"
 
 scrape_configs:
-  - job_name: prometheus
-    static_configs:
-      - targets: ['localhost:9090']
-  - job_name: vm01
-    static_configs:
-      - targets: ['192.168.1.30:9100']
-  - job_name: vm02
-    static_configs:
-      - targets: ['192.168.1.29:9100']
+{% for job in prometheus_jobs: %}
+- job_name: {{ job.job_name }}
+{% if job.metrics_path is defined %}
+  metrics_path: '{{ job.metrics_path }}'
+{% endif %}
+  static_configs: 
+{% for config in job.static_configs: %}
+  - targets: 
+{% for target in config.targets: %}
+    - '{{ target }}'
+{% endfor %}
+{% endfor %}
+{% endfor %}
