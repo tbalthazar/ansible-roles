@@ -11,6 +11,10 @@ http:
   routers:
     node-exporter:
       rule: "Host(`{{ node_exporter_domain }}`) && Path(`{{ node_exporter_domain_path }}`)"
+{% if node_exporter_https == "enabled" %}
+      tls:
+        certResolver: le-resolver
+{% endif %}
       middlewares:
       - node-exporter-replacepath
       service: node-exporter

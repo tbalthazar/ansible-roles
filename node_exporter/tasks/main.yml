@@ -85,6 +85,13 @@
     group: "root"
   notify: Restart node_exporter
 
+- name: Enable node_exporter
+  systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: node_exporter
+
 - name: Copy traefik config
   template:
     src: traefik_node_exporter.yaml.j2
@@ -92,3 +99,9 @@
     mode: '755'
     owner: "{{ node_exporter_default_user_name }}"
     group: "{{ node_exporter_default_group_name }}"
+
+- name: Allow traffic from docker network
+  ufw:
+    rule: allow
+    port: '9100'
+    from: 172.18.0.0/16
