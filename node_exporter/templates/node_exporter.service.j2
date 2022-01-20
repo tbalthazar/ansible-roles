@@ -1,5 +1,6 @@
 [Unit]
 Description=Node Exporter
+After=docker.service
 
 [Service]
 User={{ node_exporter_default_user_name }}
