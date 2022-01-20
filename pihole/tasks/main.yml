@@ -37,8 +37,8 @@
     path: "/mnt/{{ hostname }}-volume/pihole/{{item}}"
     state: directory
     mode: '0771'
-    owner: "{{ pihole_default_user_name }}"
-    group: "{{ pihole_default_group_name }}"
+    owner: "systemd-coredump"
+    group: "systemd-coredump"
   with_items:
     - etc/pihole
     - etc/dnsmasq.d
