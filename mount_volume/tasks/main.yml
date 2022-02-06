@@ -4,12 +4,14 @@
 - name: Create a ext4 filesystem
   filesystem:
     fstype: ext4
-    dev: "{{ additional_volume_device }}"
+    dev: "{{ item.device }}"
+  with_items: "{{ additional_volumes }}"
 
 - name: Mount up device
   mount:
-    path: /mnt/{{ hostname }}-volume
-    src: "{{ additional_volume_device }}"
+    path: "{{ item.mountPath }}"
+    src: "{{ item.device }}"
     opts: defaults
     fstype: ext4
     state: mounted
+  with_items: "{{ additional_volumes }}"
