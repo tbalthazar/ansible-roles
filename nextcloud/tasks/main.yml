@@ -32,6 +32,14 @@
     owner: "{{ nextcloud_default_user_name }}"
     group: "{{ nextcloud_default_group_name }}"
 
+- name: Create tmp directory
+  file:
+    path: "/mnt/nextcloud-tmp"
+    state: directory
+    mode: '0770'
+    owner: "www-data"
+    group: "{{ nextcloud_default_group_name }}"
+
 - name: Create postgres directories
   file:
     path: "/mnt/{{ hostname }}-volume/nextcloud/db/var/lib/postgresql/data"

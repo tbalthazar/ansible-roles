@@ -57,6 +57,7 @@ services:
     restart: unless-stopped
     volumes:
       - /mnt/{{ hostname }}-volume/nextcloud/data:/var/www/html
+      - /mnt/nextcloud-tmp:/tmp
     env_file:
       - app.env
       - db.env
