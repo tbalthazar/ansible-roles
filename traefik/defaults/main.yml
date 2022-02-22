@@ -1,5 +1,5 @@
 ---
-traefik_docker_image_tag: 2.6.0
+traefik_docker_image_tag: 2.6.1
 traefik_default_group_id: 3020
 traefik_default_group_name: traefik
 traefik_default_user_id: 3020
