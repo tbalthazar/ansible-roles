@@ -55,6 +55,14 @@
     dest: "/mnt/{{ hostname }}-volume/traefik/config/traefik.yaml"
   notify: Restart docker-compose
 
+- name: Copy traefik metrics config
+  template:
+    src: traefik-metrics.yaml.j2
+    dest: "/mnt/{{ hostname }}-volume/traefik/config/file-provider/traefik-metrics.yaml"
+    mode: '755'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+
 - name: Create a docker network
   docker_network:
     name: traefik-proxy

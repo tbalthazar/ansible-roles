@@ -1,0 +1,7 @@
+http:
+  routers:
+    traefik-metrics:
+      rule: "Host(`metrics.commons.computer`) && Path(`/traefik`)"
+      tls:
+        certResolver: le-resolver
+      service: "prometheus@internal"     
