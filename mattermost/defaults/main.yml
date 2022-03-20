@@ -1,5 +1,5 @@
 ---
-mattermost_app_docker_image: mattermost/mattermost-team-edition:6.4.0
+mattermost_app_docker_image: mattermost/mattermost-team-edition:6.5.0
 mattermost_db_docker_image: tbalthazar/pg-wal-g:latest
 mattermost_default_group_id: 2000
 mattermost_default_group_name: mattermost
