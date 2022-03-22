@@ -14,6 +14,7 @@ services:
       PIHOLE_DNS_: '1.1.1.1;8.8.8.8'
       TZ: "Europe/Brussels"
       WEBPASSWORD: {{ pihole_web_password }}
+      FTLCONF_RATE_LIMIT: 5000/60
     volumes:
       - /mnt/{{ hostname }}-volume/pihole/etc/pihole:/etc/pihole
       - /mnt/{{ hostname }}-volume/pihole/etc/dnsmasq.d:/etc/dnsmasq.d
