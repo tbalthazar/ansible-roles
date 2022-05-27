@@ -1,0 +1,32 @@
+log:
+  level: DEBUG
+
+serversTransport:
+  insecureSkipVerify: true
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+api:
+  dashboard: true
+  insecure: true
+
+providers:
+  file:
+    directory: "/etc/traefik/providers"
+    watch: true
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      storage: /etc/traefik/acme/acme.json
+      email: {{ traefik_le_email }}
+{% if traefik_le_env|default("staging") !="production" %}
+      # staging server, comment for using default prod server
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+{% endif %}
+      dnsChallenge:
+        provider: cloudflare

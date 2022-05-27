@@ -1,0 +1,119 @@
+---
+# install traefik 
+
+- name: Ensure traefik group exists
+  group:
+    name: "{{ traefik_default_group_name }}"
+    gid: "{{ traefik_default_group_id }}"
+    state: present
+
+- name: Ensure traefik user exists
+  user:
+    name: "{{ traefik_default_user_name }}"
+    uid: "{{ traefik_default_user_id }}"
+    state: present
+    group: "{{ traefik_default_group_name }}"
+    append: true
+    create_home: false
+
+- name: Add management users to traefik group
+  user:
+    name: "{{ item.name }}"
+    groups:
+    - "{{ traefik_default_group_name }}"
+    append: true
+  with_items: "{{ users }}"
+
+- name: Create config directory
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: '0770'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+  with_items:
+  - "/etc/traefik"
+  - "/etc/traefik/acme"
+  - "/etc/traefik/providers"
+
+- name: Copy traefik config
+  template:
+    src: traefik.yaml.j2
+    dest: "/etc/traefik/traefik.yaml"
+    mode: '755'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+
+- name: Copy traefik providers config
+  template:
+    src: providers.yaml.j2
+    dest: "/etc/traefik/providers/providers.yaml"
+    mode: '755'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+
+- name: Check installed version of traefik
+  command: traefik version
+  register: traefik_installed_version
+  failed_when: false
+  changed_when: false
+
+- name: Create tmp download directlry
+  become: true
+  file:
+    path: "/tmp/traefik"
+    state: directory
+    mode: '0770'
+
+- name: Download traefik
+  become: true
+  get_url:
+    url: "https://github.com/traefik/traefik/releases/download/v{{ traefik_version }}/traefik_v{{ traefik_version }}_{{ traefik_arch }}.tar.gz"
+    dest: "/tmp/traefik/traefik_v{{ traefik_version }}_{{ traefik_arch }}.tar.gz"
+    checksum: "sha256:https://github.com/traefik/traefik/releases/download/v{{ traefik_version }}/traefik_v{{ traefik_version }}_checksums.txt"
+    force: true
+    mode: 0644
+  when: traefik_installed_version.stdout is not defined or not traefik_installed_version.stdout is search(traefik_version)
+
+- name: Unarchive traefik binary
+  unarchive:
+    src: "/tmp/traefik/traefik_v{{ traefik_version }}_{{ traefik_arch }}.tar.gz"
+    remote_src: yes
+    dest: "/tmp/traefik"
+  check_mode: false
+  when: traefik_installed_version.stdout is not defined or not traefik_installed_version.stdout is search(traefik_version)
+
+- name: Move traefik binary
+  copy:
+    src: "/tmp/traefik/traefik"
+    remote_src: yes
+    dest: "/usr/local/bin/traefik"
+    mode: 0755
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+  notify: Restart traefik
+  when: traefik_installed_version.stdout is not defined or not traefik_installed_version.stdout is search(traefik_version)
+
+- name: Delete tmp files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+  - "/tmp/traefik"
+  when: traefik_installed_version.stdout is not defined or not traefik_installed_version.stdout is search(traefik_version)
+      
+- name: Copy systemd unit file
+  template:
+    src: traefik.service.j2
+    dest: /etc/systemd/system/traefik.service
+    mode: '755'
+    owner: "root"
+    group: "root"
+  notify: Restart traefik
+
+- name: Enable traefik
+  systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: traefik
