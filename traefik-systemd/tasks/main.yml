@@ -35,12 +35,33 @@
   - "/etc/traefik"
   - "/etc/traefik/acme"
   - "/etc/traefik/providers"
+  - "/var/log/traefik"
 
 - name: Copy traefik config
   template:
     src: traefik.yaml.j2
     dest: "/etc/traefik/traefik.yaml"
     mode: '755'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+
+- name: Touch traefik logs
+  file:
+    path: "{{ item }}"
+    state: touch
+    mode: '0600'
+    owner: "{{ traefik_default_user_name }}"
+    group: "{{ traefik_default_group_name }}"
+  with_items:
+  - "/var/log/traefik/traefik.log"
+  - "/var/log/traefik/access.log"
+  notify: Restart traefik
+
+- name: Copy traefik environment
+  template:
+    src: environment.conf.j2
+    dest: "/etc/traefik/environment.conf"
+    mode: '0600'
     owner: "{{ traefik_default_user_name }}"
     group: "{{ traefik_default_group_name }}"
 

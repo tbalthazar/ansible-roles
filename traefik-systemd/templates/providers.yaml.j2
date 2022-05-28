@@ -1,59 +1,21 @@
 http:
   services:
-    mastodon:
+{% for service in traefik_services: %}
+    {{ service.name }}:
       loadBalancer:
         servers:
-        - url: "http://192.168.30.1:30303"
-    pihole:
-      loadBalancer:
-        servers:
-        - url: "http://192.168.10.3"
-    pfsense:
-      loadBalancer:
-        servers:
-        - url: "http://192.168.10.1"
-    pve:
-      loadBalancer:
-        servers:
-        - url: "https://192.168.0.30:8006"
-    truenas:
-      loadBalancer:
-        servers:
-        - url: "http://192.168.20.1"
+{% for server in service.servers: %}
+        - url: "{{ server.url }}"
+{% endfor %}
+{% endfor %}
 
   routers:
-    mastodon:
-      rule: "Host(`mastodon.h.tb.io`)"
-      service: mastodon
+{% for router in traefik_routers: %}
+    {{ router.name }}:
+      rule: "{{ router.rule }}"
+      service: {{ router.service }}
       tls:
         certresolver: myresolver
         domains:
-        - main: "mastodon.h.tb.io"
-    pihole:
-      rule: "Host(`pihole.test.h.tb.io`)"
-      service: pihole
-      tls:
-        certresolver: myresolver
-        domains:
-        - main: "*.test.h.tb.io"
-    pfsense:
-      rule: "Host(`pfsense.test.h.tb.io`)"
-      service: pfsense
-      tls:
-        certresolver: myresolver
-        domains:
-        - main: "*.test.h.tb.io"
-    pve:
-      rule: "Host(`pve.test.h.tb.io`)"
-      service: pve
-      tls:
-        certresolver: myresolver
-        domains:
-        - main: "*.test.h.tb.io"
-    truenas:
-      rule: "Host(`truenas.test.h.tb.io`)"
-      service: truenas
-      tls:
-        certresolver: myresolver
-        domains:
-        - main: "*.test.h.tb.io"
+        - main: "{{ router.main_domain }}"
+{% endfor %}

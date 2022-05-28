@@ -6,6 +6,8 @@ Wants=network-online.target systemd-networkd-wait-online.service
 [Service]
 Restart=on-abnormal
 
+EnvironmentFile=/etc/traefik/environment.conf
+
 ; User and group the process will run as.
 User={{ traefik_default_user_name }}
 Group={{ traefik_default_group_name }}

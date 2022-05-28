@@ -1,5 +1,9 @@
 log:
-  level: DEBUG
+  level: {{ traefik_log_level }}
+  filePath: /var/log/traefik/traefik.log
+
+accessLog:
+  filePath: /var/log/traefik/access.log
 
 serversTransport:
   insecureSkipVerify: true
@@ -7,6 +11,13 @@ serversTransport:
 entryPoints:
   web:
     address: ":80"
+{% if traefik_force_https_redirect == "enabled" %}
+    # redirect all http traffic to https
+    http:
+      redirections:
+        entryPoint:
+          to: "websecure"
+{% endif %}
   websecure:
     address: ":443"
 
