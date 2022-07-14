@@ -3,15 +3,17 @@
 
 - name: Create a ext4 filesystem
   filesystem:
-    fstype: ext4
+    fstype: "{{ item.fstype | default('ext4') }}"
     dev: "{{ item.device }}"
+    force: no
   with_items: "{{ additional_volumes }}"
+  when: item.fstype != "cifs"
 
 - name: Mount up device
   mount:
     path: "{{ item.mountPath }}"
     src: "{{ item.device }}"
-    opts: defaults
-    fstype: ext4
+    opts: "{{ item.mount_opts | default('defaults') }}"
+    fstype: "{{ item.fstype | default('ext4') }}"
     state: mounted
   with_items: "{{ additional_volumes }}"
