@@ -1,82 +1,45 @@
 ---
 # install jellyfin 
 
-- name: Ensure jellyfin group exists
-  group:
-    name: "{{ jellyfin_default_group_name }}"
-    gid: "{{ jellyfin_default_group_id }}"
-    state: present
-
-- name: Ensure jellyfin user exists
-  user:
-    name: "{{ jellyfin_default_user_name }}"
-    uid: "{{ jellyfin_default_user_id }}"
-    state: present
-    group: "{{ jellyfin_default_group_name }}"
-    append: true
-    create_home: false
-
-- name: Add management users to jellyfin group
-  user:
-    name: "{{ item.name }}"
-    groups:
-    - "{{ jellyfin_default_group_name }}"
-    append: true
-  with_items: "{{ users }}"
-
-- name: Create install directory
-  file:
-    path: "{{ jellyfin_install_dir }}"
-    state: directory
-    mode: '0770'
-    owner: "{{ jellyfin_default_user_name }}"
-    group: "{{ jellyfin_default_group_name }}"
-
-- name: Install exfat utils
+- name: Install apt-transport-https
   apt:
     force_apt_get: yes
-    pkg: 
-    - exfat-fuse
-    - exfat-utils
+    pkg: apt-transport-https
     state: present
     update_cache: yes
     cache_valid_time: 600
 
-- name: Load the exfat module
-  modprobe:
-    name: exfat
+- name: Add universe repo
+  apt_repository:
+    repo: universe
+    repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_facts['distribution_release'] }} universe"
     state: present
 
-- name: Mount up device
-  mount:
-    path: /mnt/external-exfat
-    src: /dev/sda1
-    opts: defaults
-    fstype: exfat
-    state: mounted
-
-- name: Create config directories
-  file:
-    path: "/mnt/external-exfat/jellyfin/app/{{item}}"
-    state: directory
-    # no permissions here cause it's exfat
-    # mode: '0770'
-    # owner: "{{ jellyfin_default_user_name }}"
-    # group: "{{ jellyfin_default_group_name }}"
-  with_items:
-    - cache
-    - config
-
-- name: Copy docker-compose file
-  template:
-    src: docker-compose.yaml.j2
-    dest: "{{ jellyfin_install_dir }}/docker-compose.yaml"
-    mode: '660' # rw- rw- ---
-    owner: "{{ jellyfin_default_user_name }}"
-    group: "{{ jellyfin_default_group_name }}"
-  notify: Restart docker-compose
-
-- name: Start docker-compose
-  docker_compose:
-    project_src: "{{ jellyfin_install_dir }}"
+- name: Add jellyfin GPG apt Key
+  apt_key:
+    url: https://repo.jellyfin.org/ubuntu/jellyfin_team.gpg.key
     state: present
+
+- name: Add jellyfin repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://repo.jellyfin.org/ubuntu {{ ansible_facts['distribution_release'] }} main"
+    state: present
+
+- name: Install jellyfin
+  apt:
+    force_apt_get: yes
+    pkg: jellyfin
+    state: present
+    update_cache: yes
+
+- name: Enable and start jellyfin service
+  systemd:
+    state: started
+    enabled: yes
+    name: jellyfin
+      
+- name: Allow web traffic traffic
+  ufw:
+    rule: allow
+    port: 8096
+    proto: tcp
