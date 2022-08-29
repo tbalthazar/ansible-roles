@@ -1,15 +1,15 @@
 ---
-- name: Make sure we have a 'wheel' group
+- name: Make sure we have a 'sudo' group
   group:
-    name: wheel
+    name: sudo
     state: present
 
-- name: Allow 'wheel' group to have passwordless sudo
+- name: Allow 'sudo' group to have passwordless sudo
   lineinfile:
     path: /etc/sudoers
     state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
     validate: '/usr/sbin/visudo -cf %s'
 
 - name: Create a new regular user with sudo privileges
@@ -17,7 +17,7 @@
     name: "{{ item.name }}"
     state: present
     groups:
-    - wheel
+    - sudo
     append: true
     create_home: true
     shell: /bin/bash
