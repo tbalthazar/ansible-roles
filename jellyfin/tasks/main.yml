@@ -1,17 +1,39 @@
 ---
 # install jellyfin 
 
-- name: Install apt-transport-https
+- name: Install required packages
   apt:
     force_apt_get: yes
-    pkg: apt-transport-https
+    pkg: "{{ item }}"
     state: present
     update_cache: yes
     cache_valid_time: 600
+  with_items:
+  - apt-transport-https
+  - gnupg
+  - intel-media-va-driver
+  - intel-gpu-tools
+
+- name: Ensure group "syslog" exists with correct gid
+  group:
+    name: syslog
+    state: present
+    gid: 120
+
+- name: Ensure group "video" exists with correct gid
+  group:
+    name: video
+    state: present
+    gid: 44
+
+- name: Ensure group "render" exists with correct gid
+  group:
+    name: render
+    state: present
+    gid: 103
 
 - name: Add universe repo
   apt_repository:
-    repo: universe
     repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_facts['distribution_release'] }} universe"
     state: present
 
@@ -31,6 +53,12 @@
     pkg: jellyfin
     state: present
     update_cache: yes
+
+- name: Add jellyfin user to appropriate groups
+  user:
+    name: jellyfin
+    groups: video,render
+    append: yes
 
 - name: Enable and start jellyfin service
   systemd:
