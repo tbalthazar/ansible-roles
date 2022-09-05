@@ -1,12 +1,21 @@
 ---
 # format and mount additional volume
 
+- name: Install additional packages
+  apt:
+    force_apt_get: yes
+    pkg: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 600
+  with_items: "{{ mount_volume_additional_packages }}"
+
 - name: Create a ext4 filesystem
   filesystem:
     fstype: "{{ item.fstype | default('ext4') }}"
     dev: "{{ item.device }}"
     force: no
-  with_items: "{{ additional_volumes }}"
+  with_items: "{{ mount_volume_additional_volumes }}"
   when: item.fstype != "cifs"
 
 - name: Mount up device
@@ -16,4 +25,4 @@
     opts: "{{ item.mount_opts | default('defaults') }}"
     fstype: "{{ item.fstype | default('ext4') }}"
     state: mounted
-  with_items: "{{ additional_volumes }}"
+  with_items: "{{ mount_volume_additional_volumes }}"
