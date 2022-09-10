@@ -1,5 +1,5 @@
 ---
-traefik_version: 2.8.3
+traefik_version: 2.8.4
 traefik_arch: linux_amd64
 traefik_log_level: ERROR
 traefik_default_group_id: 3020
