@@ -1,9 +1,0 @@
----
-# common tasks for all servers
-- include: apt.yml
-- include: hostname.yml
-- include: locale.yml
-- include: users.yml
-- include: openssh.yml
-- include: firewall.yml
-- include: utils.yml

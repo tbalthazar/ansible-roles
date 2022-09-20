@@ -1,8 +1,0 @@
----
-utils:
-  - curl
-  - git
-  - htop
-  - tree
-  - vim
-  - wget

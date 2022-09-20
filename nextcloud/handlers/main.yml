@@ -1,7 +1,0 @@
----
-- name: Restart docker-compose
-  docker_compose:
-    project_src: "{{ nextcloud_install_dir }}"
-    state: present
-    pull: true
-    restarted: true

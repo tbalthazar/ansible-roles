@@ -1,3 +1,0 @@
-# Docker Role
-
-## Config Vars
