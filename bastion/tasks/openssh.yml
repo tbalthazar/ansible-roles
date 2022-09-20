@@ -1,0 +1,13 @@
+---
+- name: Update SSH config to allow gateway ports
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: "sshd -T -f %s"
+    mode: 0644
+  with_items:
+  - regexp: "^GatewayPorts"
+    line: "GatewayPorts yes"
+  notify: Restart ssh

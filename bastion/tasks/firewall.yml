@@ -1,0 +1,6 @@
+---
+- name: Allow traffic on 8081
+  ufw:
+    rule: allow
+    port: "8081"
+    proto: tcp

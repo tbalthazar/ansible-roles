@@ -1,0 +1,23 @@
+- update traefik.yaml to add a file provider
+- set the content of this file as file config
+http:
+  routers:
+    hellogo-router:
+      rule: "Host(`hellogo.tb.io`)"
+      service: hellogo
+      entryPoints:
+        - https
+      tls:
+        certresolver: "le-resolver"
+  services:
+    hellogo:
+      loadBalancer:
+        servers:
+        - url: "http://172.17.0.1:8081/"
+          #- url: "http://bastion.tb.io:8081/"
+
+# add a provider in traefik.yaml
+#  file:
+#    filename: "/etc/traefik/dynamic_conf.yml"
+#    watch: true
+

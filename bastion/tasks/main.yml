@@ -1,0 +1,4 @@
+---
+# tasks for a bastion server
+- include: openssh.yml
+- include: firewall.yml
