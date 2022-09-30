@@ -1,9 +1,0 @@
----
-pihole_install_dir: /opt/pihole
-pihole_domain: pihole.home
-pihole_docker_image: pihole/pihole:2022.02.1
-pihole_default_group_id: 3030
-pihole_default_group_name: pihole
-pihole_default_user_id: 3030
-pihole_default_user_name: pihole
-pihole_web_password: pihole

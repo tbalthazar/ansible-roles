@@ -1,6 +1,0 @@
----
-- name: Restart docker-compose
-  docker_compose:
-    project_src: "{{ grafana_install_dir }}"
-    state: present
-    restarted: true
